@@ -1,7 +1,8 @@
 # Adapted from robofab.pens.filterPen
 from __future__ import absolute_import, division, print_function
 
-from fontTools.misc.bezierTools import calcCubicParameters, calcQuadraticParameters, solveQuadratic
+from math import sqrt
+from fontTools.misc.bezierTools import calcCubicParameters, calcQuadraticParameters, epsilon, solveQuadratic
 from jkFontGeometry.geometry import distance_between_points, half_point
 
 
@@ -73,29 +74,64 @@ def getPointListForCubic(ts, pt0, pt1, pt2, pt3):
     return path
 
 
-def getExtremaForCubic(pt1, pt2, pt3, pt4, h=True, v=False):
-    (ax, ay), (bx, by), c, d = calcCubicParameters(pt1, pt2, pt3, pt4)
+def getExtremaForCubic(pt0, pt1, pt2, pt3, h=True, v=False, include_start_end=False):
+    """Return a list of t values at which the cubic curve defined by pt0, pt1, pt2, pt3 has extrema.
+
+    :param h: Calculate extrema for horizontal derivative == 0 (= what type designers call vertical extrema!).
+    :type h: bool
+    :param v: Calculate extrema for vertical derivative == 0 (= what type designers call horizontal extrema!).
+    :type v: bool
+    :param include_start_end: Also calculate extrema that lie at the start or end point of the curve.
+    :type include_start_end: bool
+    """
+    (ax, ay), (bx, by), c, d = calcCubicParameters(pt0, pt1, pt2, pt3)
     ax *= 3.0
     ay *= 3.0
     bx *= 2.0
     by *= 2.0
-    points = []
-    vectors = []
-    if h:
-        roots = [t for t in solveQuadratic(ay, by, c[1]) if 0 < t < 1]
-    if v:
-        roots += [t for t in solveQuadratic(ax, bx, c[0]) if 0 < t < 1]
+    roots = []
+    if include_start_end:
+        if h:
+            roots = [t for t in solveQuadratic(ay, by, c[1]) if 0 <= t <= 1]
+        if v:
+            roots += [t for t in solveQuadratic(ax, bx, c[0]) if 0 <= t <= 1]
+    else:
+        if h:
+            roots = [t for t in solveQuadratic(ay, by, c[1]) if 0 < t < 1]
+        if v:
+            roots += [t for t in solveQuadratic(ax, bx, c[0]) if 0 < t < 1]
     return roots
 
 
-def getInflectionsForCubic(pt1, pt2, pt3, pt4):
+def getExtremumPointsForCubic(pt0, pt1, pt2, pt3, h=True, v=False, include_start_end=False):
+    """Return a list of points as (x, y) tuples at which the cubic curve defined by pt0, pt1, pt2, pt3 has extrema.
+
+    :param h: Calculate extrema for horizontal derivative == 0 (= what type designers call vertical extrema!).
+    :type h: bool
+    :param v: Calculate extrema for vertical derivative == 0 (= what type designers call horizontal extrema!).
+    :type v: bool
+    :param include_start_end: Also calculate extrema that lie at the start or end point of the curve.
+    :type include_start_end: bool
+    """
+    return getPointListForCubic(
+        getExtremaForCubic(
+            pt0, pt1, pt2, pt3,
+            h = h,
+            v = v,
+            include_start_end = include_start_end
+        ),
+        pt0, pt1, pt2, pt3
+    )
+
+
+def getInflectionsForCubic(pt0, pt1, pt2, pt3):
     # After https://github.com/mekkablue/InsertInflections
     roots = []
 
-    x1, y1 = pt1
-    x2, y2 = pt2
-    x3, y3 = pt3
-    x4, y4 = pt4
+    x1, y1 = pt0
+    x2, y2 = pt1
+    x3, y3 = pt2
+    x4, y4 = pt3
 
     ax = x2 - x1
     ay = y2 - y1
@@ -132,17 +168,68 @@ def getInflectionsForCubic(pt1, pt2, pt3, pt4):
     return roots
 
 
-def getExtremaForQuadratic(pt1, pt2, pt3, h=True, v=False):
-    (ax, ay), (bx, by), c = calcQuadraticParameters(pt1, pt2, pt3)
+def getPointListForQuadratic(ts, pt0, pt1, pt2):
+    """
+    Return a list of points for increments of t on the quadratic curve defined by pt0, pt1, pt2.
+    """
+    (x0, y0), (x1, y1), (x2, y2) = pt0, pt1, pt2
+    path = []
+    for t in ts:
+        t0 = (1 - t) * (1 - t)
+        t1 = 2 * (1 - t) * t
+        t2 = t * t
+        x = t0* x0 + t1 * x1 + t2 * x2
+        y = t0* y0 + t1 * y1 + t2 * y2
+        path.append((x, y))
+    return path
+
+
+def getExtremaForQuadratic(pt0, pt1, pt2, h=True, v=False, include_start_end=False):
+    """Return a list of t values at which the quadratic curve defined by pt0, pt1, pt2 has extrema.
+
+    :param h: Calculate extrema for horizontal derivative == 0 (= what type designers call vertical extrema!).
+    :type h: bool
+    :param v: Calculate extrema for vertical derivative == 0 (= what type designers call horizontal extrema!).
+    :type v: bool
+    :param include_start_end: Also calculate extrema that lie at the start or end point of the curve.
+    :type include_start_end: bool
+    """
+    (ax, ay), (bx, by), c = calcQuadraticParameters(pt0, pt1, pt2)
     ax *= 2.0
     ay *= 2.0
-    points = []
-    vectors = []
-    if h:
-        roots = [t for t in solveLinear(ay, by) if 0 < t < 1]
-    if v:
-        roots += [t for t in solveLinear(ax, bx) if 0 < t < 1]
+    roots = []
+    if include_start_end:
+        if h:
+            roots = [t for t in solveLinear(ay, by) if 0 <= t <= 1]
+        if v:
+            roots += [t for t in solveLinear(ax, bx) if 0 <= t <= 1]
+    else:
+        if h:
+            roots = [t for t in solveLinear(ay, by) if 0 < t < 1]
+        if v:
+            roots += [t for t in solveLinear(ax, bx) if 0 < t < 1]
     return roots
+
+
+def getExtremumPointsForQuadratic(pt0, pt1, pt2, h=True, v=False, include_start_end=False):
+    """Return a list of points as (x, y) tuples at which the quadratic curve defined by pt0, pt1, pt2 has extrema.
+
+    :param h: Calculate extrema for horizontal derivative == 0 (= what type designers call vertical extrema!).
+    :type h: bool
+    :param v: Calculate extrema for vertical derivative == 0 (= what type designers call horizontal extrema!).
+    :type v: bool
+    :param include_start_end: Also calculate extrema that lie at the start or end point of the curve.
+    :type include_start_end: bool
+    """
+    return getPointListForQuadratic(
+        getExtremaForQuadratic(
+            pt0, pt1, pt2,
+            h = h,
+            v = v,
+            include_start_end = include_start_end
+        ),
+        pt0, pt1, pt2
+    )
 
 
 def solveLinear(a, b):
