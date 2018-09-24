@@ -167,9 +167,12 @@ class Cubic(object):
 
 
 	def calculate_extrema(self):
-		roots = getExtremaForCubic(self.p0, self.p1, self.p2, self.p3, h=True, v=False)
-		# TODO: Extrema "between" segments
-		return roots
+		return getExtremaForCubic(
+			self.p0, self.p1, self.p2, self.p3,
+			h = True,
+			v = False,
+			include_start_end = True
+		)
 
 
 	def calculate_extremum_points(self):
