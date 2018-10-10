@@ -119,6 +119,25 @@ def is_collinear(a, b, c):
 
 # Intersections
 
+
+def dot_product_2d(p1, p2, p3):
+	# Return the dot product of the vectors p1_p2 and p1_p3
+	p1x, p1y = p1
+	p2x, p2y = p2
+	p3x, p3y = p3
+
+	# calculate unit vectors
+	m1 = distance_between_points(p1, p2)
+	m2 = distance_between_points(p1, p3)
+
+	v1 = ((p2x - p1x) / m1, (p2y - p1y) / m1)
+	v2 = ((p3x - p1x) / m2, (p3y - p1y) / m2)
+
+	dp = v1[0] * v2[0] + v1[1] * v2[1]
+	#print v1, v2, dp
+	return dp
+
+
 def line_coefficients(p1, p2):
 	# https://stackoverflow.com/questions/20677795/how-do-i-compute-the-intersection-point-of-two-lines-in-python
 	p1x, p1y = p1
@@ -144,5 +163,12 @@ def intersect_coeffs(L1, L2):
 def intersect(p0, p1, p2, p3):
 	# Find the intersection of two lines given by two points on each line.
 	L1 = line_coefficients(p0, p1)
-	L2 = line_coefficients(p2, p3)
-	return intersect_coeffs(L1, L2)
+	L2 = line_coefficients(p3, p2)
+	result = intersect_coeffs(L1, L2)
+	if result is None:
+		return None
+	if dot_product_2d(p0, p1, result) < 0:
+		return None
+	if dot_product_2d(p3, p2, result) < 0:
+		return None
+	return result
