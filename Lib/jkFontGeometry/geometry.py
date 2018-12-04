@@ -138,6 +138,16 @@ def dot_product_2d(p1, p2, p3):
 	return dp
 
 
+def same_direction(p0, p1, p2, p3, i):
+	# Check if the lines from p0_p1 and p0_i,
+	# as well as p3_p2 and p3_i point in the same direction +- 90 degrees.
+	if dot_product_2d(p0, p1, i) < 0:
+		return False
+	if dot_product_2d(p3, p2, i) < 0:
+		return False
+	return True
+
+
 def line_coefficients(p1, p2):
 	# https://stackoverflow.com/questions/20677795/how-do-i-compute-the-intersection-point-of-two-lines-in-python
 	p1x, p1y = p1
@@ -164,11 +174,4 @@ def intersect(p0, p1, p2, p3):
 	# Find the intersection of two lines given by two points on each line.
 	L1 = line_coefficients(p0, p1)
 	L2 = line_coefficients(p3, p2)
-	result = intersect_coeffs(L1, L2)
-	if result is None:
-		return None
-	if dot_product_2d(p0, p1, result) < 0:
-		return None
-	if dot_product_2d(p3, p2, result) < 0:
-		return None
-	return result
+	return intersect_coeffs(L1, L2)
