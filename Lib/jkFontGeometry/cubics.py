@@ -315,13 +315,13 @@ class SuperCubic(object):
 				self._split_index = index
 				self._t_step = 0
 				tx, ty = get_cubic_point(0, cubic.p0, cubic.p1, cubic.p2, cubic.p3)
-				print("                Fast Found t = 0 -> (%0.3f, %0.3f)" % (tx, ty))
+				#print("                Fast Found t = 0 -> (%0.3f, %0.3f)" % (tx, ty))
 				return index, 0.0
 			elif p3x - 1 <= x <= p3x + 1 and p3y - 1 <= y <= p3y + 1:
 				self._split_index = index
 				self._t_step = cubic.num_cubic_points
 				tx, ty = get_cubic_point(1, cubic.p0, cubic.p1, cubic.p2, cubic.p3)
-				print("                Fast Found t = 1 -> (%0.3f, %0.3f)" % (tx, ty))
+				#print("                Fast Found t = 1 -> (%0.3f, %0.3f)" % (tx, ty))
 				return index, 1.0
 		
 		# Take the long road
@@ -337,9 +337,9 @@ class SuperCubic(object):
 				if dist > prev_dist:
 					if prev_dist is not None:
 						self._t_points[pt] = (index, step / cubic.num_cubic_points)
-						print("                Searching for t in cubic %i from step %i to %i of %i ..." % (self._split_index, self._t_step, step, cubic.num_cubic_points))
+						#print("                Searching for t in cubic %i from step %i to %i of %i ..." % (self._split_index, self._t_step, step, cubic.num_cubic_points))
 						tx, ty = get_cubic_point(step / cubic.num_cubic_points, cubic.p0, cubic.p1, cubic.p2, cubic.p3)
-						print("                Found t = %0.3f -> (%0.3f, %0.3f)" % (step / cubic.num_cubic_points, tx, ty))
+						#print("                Found t = %0.3f -> (%0.3f, %0.3f)" % (step / cubic.num_cubic_points, tx, ty))
 						self._t_step = step
 						return self._t_points[pt]
 				prev_dist = dist
