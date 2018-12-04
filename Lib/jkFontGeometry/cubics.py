@@ -288,7 +288,14 @@ class SuperCubic(object):
 
 
 	def add_cubic_from_point_tuple(self, point_tuple, raster_length=0.25):
-		p0, p1, p2, p3 = point_tuple
+		try:
+			p0, p1, p2, p3 = point_tuple
+		except ValueError:
+			print("WARNING: Not a curve:", point_tuple)
+			# Add a flat curve
+			p0, p3 = point_tuple
+			p1 = (p0[0] + 0.333333 * (p3[0] - p0[0]), p0[1] + 0.333333 * (p3[1] - p0[1]))
+			p2 = (p0[0] + 0.666667 * (p3[0] - p0[0]), p0[1] + 0.666667 * (p3[1] - p0[1]))
 		self.add_cubic_from_points(p0, p1, p2, p3, raster_length)
 
 
