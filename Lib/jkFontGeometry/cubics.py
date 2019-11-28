@@ -291,41 +291,53 @@ class SuperCubic(object):
             p0y = round(cubic.p0[1])
             p3x = round(cubic.p3[0])
             p3y = round(cubic.p3[1])
+            # print("Quick check:", x, y, "in", p0x, p0y, p3x, p3y)
 
             if p0x - 1 <= x <= p0x + 1 and p0y - 1 <= y <= p0y + 1:
                 self._split_index = index
                 self._t_step = 0
-                tx, ty = get_cubic_point(0, cubic.p0, cubic.p1, cubic.p2, cubic.p3)
+                # tx, ty = get_cubic_point(0, cubic.p0, cubic.p1, cubic.p2, cubic.p3)
                 # print("                Fast Found t = 0 -> (%0.3f, %0.3f)" % (tx, ty))
                 return index, 0.0
             elif p3x - 1 <= x <= p3x + 1 and p3y - 1 <= y <= p3y + 1:
                 self._split_index = index
                 self._t_step = cubic.num_cubic_points
-                tx, ty = get_cubic_point(1, cubic.p0, cubic.p1, cubic.p2, cubic.p3)
+                # tx, ty = get_cubic_point(1, cubic.p0, cubic.p1, cubic.p2, cubic.p3)
                 # print("                Fast Found t = 1 -> (%0.3f, %0.3f)" % (tx, ty))
                 return index, 1.0
 
         # Take the long road
 
+        # print("Need long calculation ...", self._split_index, len(self.cubics))
         prev_dist = None
         for index in range(self._split_index, len(self.cubics)):
             cubic = self.cubics[index]
             self._split_index = index
+            if len(cubic.cubic_points) == 2:
+                # Straight curve, use ratio of requested point to full line length
+                p = cubic.cubic_points[0]
+                px, py = p
+                self._t_step = hypot(y - py, x - px) / cubic.length
+                return index, self._t_step
+
             for step in range(self._t_step, cubic.num_cubic_points + 1):
                 p = cubic.cubic_points[step]
                 px, py = p
                 dist = hypot(y - py, x - px)  # Point distance
-                if dist > prev_dist:
-                    if prev_dist is not None:
+                if prev_dist is not None:
+                    if dist > prev_dist:
                         self._t_points[pt] = (index, step / cubic.num_cubic_points)
                         # print("                Searching for t in cubic %i from step %i to %i of %i ..." % (self._split_index, self._t_step, step, cubic.num_cubic_points))
-                        tx, ty = get_cubic_point(step / cubic.num_cubic_points, cubic.p0, cubic.p1, cubic.p2, cubic.p3)
+                        # tx, ty = get_cubic_point(step / cubic.num_cubic_points, cubic.p0, cubic.p1, cubic.p2, cubic.p3)
                         # print("                Found t = %0.3f -> (%0.3f, %0.3f)" % (step / cubic.num_cubic_points, tx, ty))
                         self._t_step = step
                         return self._t_points[pt]
                 prev_dist = dist
             self.reset_t()
             prev_dist = None
+        # Nothing was found ...
+        print("Could not find t for point %s in cubics %s" % (pt, self.cubics))
+        return None
 
     if use_scipy:
         def calculate_t_for_point(self, pt):
