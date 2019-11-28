@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
-from jkFontGeometry.beziertools import estimateCubicCurveLength, getInflectionsForCubic, getExtremaForCubic
+from jkFontGeometry.beziertools import estimateCubicCurveLength, \
+    getInflectionsForCubic, getExtremaForCubic
 
 
 DEBUG_SPLIT = False
@@ -134,7 +135,7 @@ class Cubic(object):
 
     def calculate_cubic_points(self):
         # Return a dict of t values to point coordinates for the cubic curve
-        #st = time()
+        # st = time()
         t_list = []
         if self.raster_steps < 2 or (self.p0 == self.p1) and (self.p2 == self.p3):
             t_list = [self.p0, self.p3]
@@ -155,9 +156,9 @@ class Cubic(object):
     def calculate_extrema(self):
         return getExtremaForCubic(
             self.p0, self.p1, self.p2, self.p3,
-            h = True,
-            v = False,
-            include_start_end = True
+            h=True,
+            v=False,
+            include_start_end=True
         )
 
     def calculate_extremum_points(self):
@@ -295,13 +296,13 @@ class SuperCubic(object):
                 self._split_index = index
                 self._t_step = 0
                 tx, ty = get_cubic_point(0, cubic.p0, cubic.p1, cubic.p2, cubic.p3)
-                #print("                Fast Found t = 0 -> (%0.3f, %0.3f)" % (tx, ty))
+                # print("                Fast Found t = 0 -> (%0.3f, %0.3f)" % (tx, ty))
                 return index, 0.0
             elif p3x - 1 <= x <= p3x + 1 and p3y - 1 <= y <= p3y + 1:
                 self._split_index = index
                 self._t_step = cubic.num_cubic_points
                 tx, ty = get_cubic_point(1, cubic.p0, cubic.p1, cubic.p2, cubic.p3)
-                #print("                Fast Found t = 1 -> (%0.3f, %0.3f)" % (tx, ty))
+                # print("                Fast Found t = 1 -> (%0.3f, %0.3f)" % (tx, ty))
                 return index, 1.0
 
         # Take the long road
@@ -313,13 +314,13 @@ class SuperCubic(object):
             for step in range(self._t_step, cubic.num_cubic_points + 1):
                 p = cubic.cubic_points[step]
                 px, py = p
-                dist = hypot(y - py, x - px) # Point distance
+                dist = hypot(y - py, x - px)  # Point distance
                 if dist > prev_dist:
                     if prev_dist is not None:
                         self._t_points[pt] = (index, step / cubic.num_cubic_points)
-                        #print("                Searching for t in cubic %i from step %i to %i of %i ..." % (self._split_index, self._t_step, step, cubic.num_cubic_points))
+                        # print("                Searching for t in cubic %i from step %i to %i of %i ..." % (self._split_index, self._t_step, step, cubic.num_cubic_points))
                         tx, ty = get_cubic_point(step / cubic.num_cubic_points, cubic.p0, cubic.p1, cubic.p2, cubic.p3)
-                        #print("                Found t = %0.3f -> (%0.3f, %0.3f)" % (step / cubic.num_cubic_points, tx, ty))
+                        # print("                Found t = %0.3f -> (%0.3f, %0.3f)" % (step / cubic.num_cubic_points, tx, ty))
                         self._t_step = step
                         return self._t_points[pt]
                 prev_dist = dist
@@ -333,7 +334,7 @@ class SuperCubic(object):
             cubic = self.cubics[self._split_index]
             distance, step = cubic.cubic_points.query(pt)
             self._t_points[pt] = (self._split_index, step / cubic.num_cubic_points)
-            #print("cubic #%i, t = %0.3f" % self._t_points[pt])
+            # print("cubic #%i, t = %0.3f" % self._t_points[pt])
             return self._t_points[pt]
 
     def reset_split(self):
@@ -346,11 +347,17 @@ class SuperCubic(object):
         self._t_step = 0
 
     def split_at_pt(self, pt):
-        if DEBUG_SPLIT: print("SuperCubic.split_at_pt", pt, "->")
+        if DEBUG_SPLIT:
+            print("SuperCubic.split_at_pt", pt, "->")
         index, t = self.t_for_point(pt)
         # FIXME: This only splits inside one cubic segment?
-        if DEBUG_SPLIT: print("    Splitting cubic %i from %0.4f to %0.4f ..." % (index, self.cubics[index]._t, t))
-        #self._split_index = index
+        if DEBUG_SPLIT:
+            print("    Splitting cubic %i from %0.4f to %0.4f ..." % (
+                index,
+                self.cubics[index]._t,
+                t
+            ))
+        # self._split_index = index
         return self.cubics[index].split_at_t(t)
 
     def split_at_pt_fast(self, pt):
@@ -363,7 +370,7 @@ class SuperCubic(object):
         solutions_v = [t for t in solutions_v if 0 <= t < 1]
         if len(solutions_h) == 1:
             t = (solutions_v[0] + solutions_h[0]) * 0.5
-            #t = solutions_h[0]
+            # t = solutions_h[0]
         else:
             print("Multiple solutions found:", solutions_h)
             index, t = self.t_for_point(pt)
