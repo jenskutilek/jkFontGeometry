@@ -2,10 +2,13 @@
 from __future__ import absolute_import, division, print_function
 
 from math import sqrt
-from fontTools.misc.bezierTools import calcCubicParameters, calcQuadraticParameters, epsilon, solveQuadratic
+from fontTools.misc.bezierTools import (
+    calcCubicParameters,
+    calcQuadraticParameters,
+    epsilon,
+    solveQuadratic,
+)
 from jkFontGeometry.geometry import distance_between_points, half_point
-
-
 
 
 def estimateCubicCurveLength(pt0, pt1, pt2, pt3, precision=10):
@@ -13,10 +16,12 @@ def estimateCubicCurveLength(pt0, pt1, pt2, pt3, precision=10):
     Estimate the length of this curve by iterating
     through it and averaging the length of the flat bits.
     """
-    
+
     length = 0
     step = 1.0 / precision
-    points = getPointListForCubic([f * step for f in range(precision + 1)], pt0, pt1, pt2, pt3)
+    points = getPointListForCubic(
+        [f * step for f in range(precision + 1)], pt0, pt1, pt2, pt3
+    )
     for i in range(len(points) - 1):
         pta = points[i]
         ptb = points[i + 1]
@@ -74,7 +79,9 @@ def getPointListForCubic(ts, pt0, pt1, pt2, pt3):
     return path
 
 
-def getExtremaForCubic(pt0, pt1, pt2, pt3, h=True, v=False, include_start_end=False):
+def getExtremaForCubic(
+    pt0, pt1, pt2, pt3, h=True, v=False, include_start_end=False
+):
     """Return a list of t values at which the cubic curve defined by pt0, pt1, pt2, pt3 has extrema.
 
     :param h: Calculate extrema for horizontal derivative == 0 (= what type designers call vertical extrema!).
@@ -103,24 +110,31 @@ def getExtremaForCubic(pt0, pt1, pt2, pt3, h=True, v=False, include_start_end=Fa
     return roots
 
 
-def getExtremumPointsForCubic(pt0, pt1, pt2, pt3, h=True, v=False, include_start_end=False):
-    """Return a list of points as (x, y) tuples at which the cubic curve defined by pt0, pt1, pt2, pt3 has extrema.
+def getExtremumPointsForCubic(
+    pt0, pt1, pt2, pt3, h=True, v=False, include_start_end=False
+):
+    """
+    Return a list of points as (x, y) tuples at which the cubic curve defined
+    by pt0, pt1, pt2, pt3 has extrema.
 
-    :param h: Calculate extrema for horizontal derivative == 0 (= what type designers call vertical extrema!).
-    :type h: bool
-    :param v: Calculate extrema for vertical derivative == 0 (= what type designers call horizontal extrema!).
-    :type v: bool
-    :param include_start_end: Also calculate extrema that lie at the start or end point of the curve.
-    :type include_start_end: bool
+    :param h: Calculate extrema for horizontal derivative == 0 (= what type
+              designers call vertical extrema!).
+    :type h:  bool
+    :param v: Calculate extrema for vertical derivative == 0 (= what type
+              designers call horizontal extrema!).
+    :type v:  bool
+    :param    include_start_end: Also calculate extrema that lie at the start
+              or end point of the curve.
+    :type     include_start_end: bool
     """
     return getPointListForCubic(
         getExtremaForCubic(
-            pt0, pt1, pt2, pt3,
-            h = h,
-            v = v,
-            include_start_end = include_start_end
+            pt0, pt1, pt2, pt3, h=h, v=v, include_start_end=include_start_end
         ),
-        pt0, pt1, pt2, pt3
+        pt0,
+        pt1,
+        pt2,
+        pt3,
     )
 
 
@@ -139,13 +153,13 @@ def getInflectionsForCubic(pt0, pt1, pt2, pt3):
     by = y3 - y2 - ay
     cx = x4 - x3 - ax - bx - bx
     cy = y4 - y3 - ay - by - by
-    
-    c0 = ( ax * by ) - ( ay * bx )
-    c1 = ( ax * cy ) - ( ay * cx )
-    c2 = ( bx * cy ) - ( by * cx )
+
+    c0 = (ax * by) - (ay * bx)
+    c1 = (ax * cy) - (ay * cx)
+    c2 = (bx * cy) - (by * cx)
 
     if abs(c2) > 0.00001:
-        discr = ( c1 ** 2 ) - ( 4 * c0 * c2)
+        discr = (c1 ** 2) - (4 * c0 * c2)
         c2 *= 2
         if abs(discr) < 0.000001:
             root = -c1 / c2
@@ -153,15 +167,15 @@ def getInflectionsForCubic(pt0, pt1, pt2, pt3):
                 roots.append(root)
         elif discr > 0:
             discr = discr ** 0.5
-            root = ( -c1 - discr ) / c2
+            root = (-c1 - discr) / c2
             if (root > 0.001) and (root < 0.99):
                 roots.append(root)
-    
-            root = ( -c1 + discr ) / c2
+
+            root = (-c1 + discr) / c2
             if (root > 0.001) and (root < 0.99):
                 roots.append(root)
     elif c1 != 0.0:
-        root = - c0 / c1
+        root = -c0 / c1
         if (root > 0.001) and (root < 0.99):
             roots.append(root)
 
@@ -170,7 +184,8 @@ def getInflectionsForCubic(pt0, pt1, pt2, pt3):
 
 def getPointListForQuadratic(ts, pt0, pt1, pt2):
     """
-    Return a list of points for increments of t on the quadratic curve defined by pt0, pt1, pt2.
+    Return a list of points for increments of t on the quadratic curve defined
+    by pt0, pt1, pt2.
     """
     (x0, y0), (x1, y1), (x2, y2) = pt0, pt1, pt2
     path = []
@@ -178,21 +193,28 @@ def getPointListForQuadratic(ts, pt0, pt1, pt2):
         t0 = (1 - t) * (1 - t)
         t1 = 2 * (1 - t) * t
         t2 = t * t
-        x = t0* x0 + t1 * x1 + t2 * x2
-        y = t0* y0 + t1 * y1 + t2 * y2
+        x = t0 * x0 + t1 * x1 + t2 * x2
+        y = t0 * y0 + t1 * y1 + t2 * y2
         path.append((x, y))
     return path
 
 
-def getExtremaForQuadratic(pt0, pt1, pt2, h=True, v=False, include_start_end=False):
-    """Return a list of t values at which the quadratic curve defined by pt0, pt1, pt2 has extrema.
+def getExtremaForQuadratic(
+    pt0, pt1, pt2, h=True, v=False, include_start_end=False
+):
+    """
+    Return a list of t values at which the quadratic curve defined by pt0, pt1,
+    pt2 has extrema.
 
-    :param h: Calculate extrema for horizontal derivative == 0 (= what type designers call vertical extrema!).
-    :type h: bool
-    :param v: Calculate extrema for vertical derivative == 0 (= what type designers call horizontal extrema!).
-    :type v: bool
-    :param include_start_end: Also calculate extrema that lie at the start or end point of the curve.
-    :type include_start_end: bool
+    :param h: Calculate extrema for horizontal derivative == 0 (= what type
+              designers call vertical extrema!).
+    :type h:  bool
+    :param v: Calculate extrema for vertical derivative == 0 (= what type
+              designers call horizontal extrema!).
+    :type v:  bool
+    :param include_start_end: Also calculate extrema that lie at the start or
+                              end point of the curve.
+    :type include_start_end:  bool
     """
     (ax, ay), (bx, by), c = calcQuadraticParameters(pt0, pt1, pt2)
     ax *= 2.0
@@ -211,24 +233,30 @@ def getExtremaForQuadratic(pt0, pt1, pt2, h=True, v=False, include_start_end=Fal
     return roots
 
 
-def getExtremumPointsForQuadratic(pt0, pt1, pt2, h=True, v=False, include_start_end=False):
-    """Return a list of points as (x, y) tuples at which the quadratic curve defined by pt0, pt1, pt2 has extrema.
+def getExtremumPointsForQuadratic(
+    pt0, pt1, pt2, h=True, v=False, include_start_end=False
+):
+    """
+    Return a list of points as (x, y) tuples at which the quadratic curve
+    defined by pt0, pt1, pt2 has extrema.
 
-    :param h: Calculate extrema for horizontal derivative == 0 (= what type designers call vertical extrema!).
-    :type h: bool
-    :param v: Calculate extrema for vertical derivative == 0 (= what type designers call horizontal extrema!).
-    :type v: bool
-    :param include_start_end: Also calculate extrema that lie at the start or end point of the curve.
-    :type include_start_end: bool
+    :param h: Calculate extrema for horizontal derivative == 0 (= what type
+              designers call vertical extrema!).
+    :type h:  bool
+    :param v: Calculate extrema for vertical derivative == 0 (= what type
+              designers call horizontal extrema!).
+    :type v:  bool
+    :param include_start_end: Also calculate extrema that lie at the start or
+                              end point of the curve.
+    :type include_start_end:  bool
     """
     return getPointListForQuadratic(
         getExtremaForQuadratic(
-            pt0, pt1, pt2,
-            h = h,
-            v = v,
-            include_start_end = include_start_end
+            pt0, pt1, pt2, h=h, v=v, include_start_end=include_start_end
         ),
-        pt0, pt1, pt2
+        pt0,
+        pt1,
+        pt2,
     )
 
 
@@ -242,7 +270,7 @@ def solveLinear(a, b):
         DD = b * b
         if DD >= 0.0:
             rDD = sqrt(DD)
-            roots = [(-b+rDD)/2.0/a, (-b-rDD)/2.0/a]
+            roots = [(-b + rDD) / 2.0 / a, (-b - rDD) / 2.0 / a]
         else:
             roots = []
     return roots
