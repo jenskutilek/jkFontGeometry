@@ -56,15 +56,6 @@ fn get_cubic_point(_py: Python, t: f32, p0: Vec<f32>, p1: Vec<f32>, p2: Vec<f32>
         p = p0
     } else if t == 1.0 {
         p = p3
-    // } else if t == 0.5 {
-    //     let a: Vec<f32> = half_point_internal(p0, p1);
-    //     let b: Vec<f32> = half_point_internal(p1, p2);
-    //     let c: Vec<f32> = half_point_internal(p2, p3);
-
-    //     let d: Vec<f32> = half_point_internal(a, b);
-    //     let e: Vec<f32> = half_point_internal(b, c);
-
-    //     p = half_point_internal(d, e);
     } else {
         let cx = (p1[0] - p0[0]) * 3.0;
         let cy = (p1[1] - p0[1]) * 3.0;
