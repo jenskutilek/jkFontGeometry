@@ -1,4 +1,9 @@
-from jkFontGeometry.fastgeometry import intersect, get_cubic_point, get_quadratic_point
+from jkFontGeometry.fastgeometry import (
+    intersect,
+    get_cubic_point,
+    get_quadratic_point,
+)
+
 
 print(intersect((0, 0), (1, 1), (2, 1), (3, 0)))
 

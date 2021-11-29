@@ -1,9 +1,7 @@
-from __future__ import absolute_import, division, print_function
-
 from jkFontGeometry.cubics import SuperCubic
 
 
-class CubicSegments(object):
+class CubicSegments:
     def __init__(self, layer):
         self.layer = layer
         self.segments = []

@@ -1,6 +1,3 @@
-# Adapted from robofab.pens.filterPen
-from __future__ import absolute_import, division, print_function
-
 from math import sqrt
 from fontTools.misc.bezierTools import (
     calcCubicParameters,
@@ -9,6 +6,9 @@ from fontTools.misc.bezierTools import (
     solveQuadratic,
 )
 from jkFontGeometry.geometry import distance_between_points, half_point
+
+
+# Adapted from robofab.pens.filterPen
 
 
 def estimateCubicCurveLength(pt0, pt1, pt2, pt3, precision=10):
@@ -60,7 +60,8 @@ def getPointOnCubic(t, pt0, pt1, pt2, pt3):
 
 def getPointListForCubic(ts, pt0, pt1, pt2, pt3):
     """
-    Return a list of points for increments of t on the cubic curve defined by pt0, pt1, pt2, pt3.
+    Return a list of points for increments of t on the cubic curve defined by
+    pt0, pt1, pt2, pt3.
     """
     (x0, y0), (x1, y1) = pt0, pt1
     cx = (x1 - x0) * 3
@@ -82,13 +83,18 @@ def getPointListForCubic(ts, pt0, pt1, pt2, pt3):
 def getExtremaForCubic(
     pt0, pt1, pt2, pt3, h=True, v=False, include_start_end=False
 ):
-    """Return a list of t values at which the cubic curve defined by pt0, pt1, pt2, pt3 has extrema.
+    """
+    Return a list of t values at which the cubic curve defined by pt0, pt1,
+    pt2, pt3 has extrema.
 
-    :param h: Calculate extrema for horizontal derivative == 0 (= what type designers call vertical extrema!).
+    :param h: Calculate extrema for horizontal derivative == 0 (= what type
+       designers call vertical extrema!).
     :type h: bool
-    :param v: Calculate extrema for vertical derivative == 0 (= what type designers call horizontal extrema!).
+    :param v: Calculate extrema for vertical derivative == 0 (= what type
+       designers call horizontal extrema!).
     :type v: bool
-    :param include_start_end: Also calculate extrema that lie at the start or end point of the curve.
+    :param include_start_end: Also calculate extrema that lie at the start or
+       end point of the curve.
     :type include_start_end: bool
     """
     (ax, ay), (bx, by), c, d = calcCubicParameters(pt0, pt1, pt2, pt3)

@@ -1,14 +1,11 @@
-# -*- coding: utf-8 -*-
-# Helper functions for geometry, tuple-based API with pt = (x, y)
-from __future__ import absolute_import, division, print_function
-
 from math import atan2, hypot, pi, sin
 
-
 """
-Slow geometry -- when the c extension is not available.
+Slow geometry -- when the rust extension is not available.
 """
 
+
+# Helper functions for geometry, tuple-based API with pt = (x, y)
 
 def angle_between_points(p0, p1, do_round=False):
     phi = atan2(p1[1] - p0[1], p1[0] - p0[0])

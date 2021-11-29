@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
-# Helper functions for geometry, point-based API with pt.x and pt.y
-# These are just wrapper functions for the tuple-based functions in jkRFTools.geometry.
-from __future__ import absolute_import, division, print_function
-
 from jkFontGeometry import geometry
 
+
+# Helper functions for geometry, point-based API with pt.x and pt.y
+# These are just wrapper functions for the tuple-based functions in
+# jkRFTools.geometry.
 
 def angle_between_points(p0, p1, do_round=False):
     return geometry.angle_between_points((p0.x, p0.y), (p1.x, p1.y), do_round)
@@ -41,7 +40,8 @@ def round_point_conditional(pt, do_round=True):
 
 # A triangle is formed:
 # b = hypotenuse, the line from p0 to p3
-# a = p0 to I with I being the intersection point of the lines p0 to p1 and p3 to p2
+# a = p0 to I with I being the intersection point of the lines p0 to p1
+#     and p3 to p2
 # c = p3 to I "
 
 # alpha = the angle between p0p1 and p0p3

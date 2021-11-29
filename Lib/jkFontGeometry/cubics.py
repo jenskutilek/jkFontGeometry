@@ -1,6 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
+from fontTools.misc.bezierTools import calcCubicParameters, solveCubic
+from math import hypot
 
 from jkFontGeometry.beziertools import (
     estimateCubicCurveLength,
@@ -11,8 +10,6 @@ from jkFontGeometry.beziertools import (
 
 DEBUG_SPLIT = False
 use_scipy = False
-
-
 if use_scipy:
     try:
         from scipy import spatial
@@ -23,17 +20,12 @@ if use_scipy:
         print("scipy is not available.")
 
 
-# from time import time
-
-from fontTools.misc.bezierTools import calcCubicParameters, solveCubic
-from math import hypot
-
-
 try:
-    from jkFontGeometry._fastgeometry import get_cubic_point
+    from jkFontGeometry.fastgeometry import get_cubic_point
 except ImportError:
     print(
-        "Fast geometry extension not available, falling back to slower version."
+        "Fast geometry extension not available, "
+        "falling back to (slightly) slower version."
     )
     from jkFontGeometry.beziertools import getPointOnCubic as get_cubic_point
 
@@ -45,10 +37,12 @@ class Cubic(object):
         self.p2 = p2
         self.p3 = p3
 
-        # The estimated length of each distance if the cubic is converted to points
+        # The estimated length of each distance if the cubic is converted
+        # to points
         self.raster_length = raster_length
 
-        # The list of points on the cubic, with estimated raster_length distance
+        # The list of points on the cubic, with estimated raster_length
+        # distance
         self._cubic_points = None
         self._num_cubic_points = None
 
@@ -58,7 +52,8 @@ class Cubic(object):
         # The number of steps to achieve the desired point distances
         self._raster_steps = None
 
-        # The current split point (will be moved along the curve when splitting)
+        # The current split point (will be moved along the curve when
+        # splitting)
         self._t = 0.0
 
         # Cache for Cubic params (a, b, c, d)
@@ -198,7 +193,8 @@ class Cubic(object):
 
     def split_at_t(self, t):
 
-        # From https://stackoverflow.com/questions/878862/drawing-part-of-a-bézier-curve-by-reusing-a-basic-bézier-curve-function
+        # From https://stackoverflow.com/questions/878862/drawing-part-of-a-bé
+        # zier-curve-by-reusing-a-basic-bézier-curve-function
 
         # st = time()
 
@@ -307,11 +303,13 @@ class SuperCubic(object):
         return self._t_points.get(pt, self.calculate_t_for_point(pt))
 
     def calculate_t_for_point(self, pt):
-        # Calculate the t value for the closest distance of point pt to a series of cubic Beziers
+        # Calculate the t value for the closest distance of point pt to a
+        # series of cubic Beziers
 
         x, y = pt
 
-        # Check special case: Is the point close to the first or last points of any of the cubics?
+        # Check special case: Is the point close to the first or last points of
+        # any of the cubics?
 
         for index in range(self._split_index, len(self.cubics)):
             cubic = self.cubics[index]
@@ -326,7 +324,10 @@ class SuperCubic(object):
                 tx, ty = get_cubic_point(
                     0, cubic.p0, cubic.p1, cubic.p2, cubic.p3
                 )
-                # print("                Fast Found t = 0 -> (%0.3f, %0.3f)" % (tx, ty))
+                # print(
+                #     "                "
+                #     "Fast Found t = 0 -> (%0.3f, %0.3f)" % (tx, ty)
+                # )
                 return index, 0.0
             elif p3x - 1 <= x <= p3x + 1 and p3y - 1 <= y <= p3y + 1:
                 self._split_index = index
@@ -334,7 +335,10 @@ class SuperCubic(object):
                 tx, ty = get_cubic_point(
                     1, cubic.p0, cubic.p1, cubic.p2, cubic.p3
                 )
-                # print("                Fast Found t = 1 -> (%0.3f, %0.3f)" % (tx, ty))
+                # print(
+                #     "                "
+                #     "Fast Found t = 1 -> (%0.3f, %0.3f)" % (tx, ty)
+                # )
                 return index, 1.0
 
         # Take the long road
@@ -353,7 +357,12 @@ class SuperCubic(object):
                             index,
                             step / cubic.num_cubic_points,
                         )
-                        # print("                Searching for t in cubic %i from step %i to %i of %i ..." % (self._split_index, self._t_step, step, cubic.num_cubic_points))
+                        # print(
+                        #     "                "
+                        #     f"Searching for t in cubic {self._split_index} "
+                        #     f"from step {self._t_step} to {step} of "
+                        #     f"{cubic.num_cubic_points} ..."
+                        # )
                         tx, ty = get_cubic_point(
                             step / cubic.num_cubic_points,
                             cubic.p0,
@@ -361,7 +370,12 @@ class SuperCubic(object):
                             cubic.p2,
                             cubic.p3,
                         )
-                        # print("                Found t = %0.3f -> (%0.3f, %0.3f)" % (step / cubic.num_cubic_points, tx, ty))
+                        # print(
+                        #     "                "
+                        #     "Found t = %0.3f -> (%0.3f, %0.3f)" % (
+                        #         step / cubic.num_cubic_points, tx, ty
+                        #     )
+                        # )
                         self._t_step = step
                         return self._t_points[pt]
                 prev_dist = dist
@@ -371,7 +385,8 @@ class SuperCubic(object):
     if use_scipy:
 
         def calculate_t_for_point(self, pt):
-            # Calculate the t value for the closest distance of point pt to a series of cubic Beziers
+            # Calculate the t value for the closest distance of point pt to a
+            # series of cubic Beziers
 
             cubic = self.cubics[self._split_index]
             distance, step = cubic.cubic_points.query(pt)
