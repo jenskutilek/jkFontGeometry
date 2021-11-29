@@ -16,22 +16,22 @@ fn line_coefficients(point0: Vec<f32>, point1: Vec<f32>) -> Vec<f32> {
     return coefficients
 }
 
-fn intersect_coeffs(line1: Vec<f32>, line2: Vec<f32>) -> Vec<f32> {
+fn intersect_coeffs(line1: Vec<f32>, line2: Vec<f32>) -> Option<Vec<f32>> {
     // Intersect two 2D lines line0, line1 using their coefficients.
-
-    let mut intersection: Vec<f32> = Vec::with_capacity(2);
     let d: f32 = line1[0] * line2[1] - line1[1] * line2[0];
 
-    if d != 0.0 {
+    if d == 0.0 {
+        None
+    } else {
+        let mut intersection: Vec<f32> = Vec::with_capacity(2);
         let dx: f32 = line1[2] * line2[1] - line1[1] * line2[2];
         let dy: f32 = line1[0] * line2[2] - line1[2] * line2[0];
         intersection.push(dx / d);
         intersection.push(dy / d);
+
+        Some(intersection)
     }
-
-    return intersection
 }
-
 
 
 // functions exposed to Python
@@ -90,14 +90,14 @@ fn get_quadratic_point(_py: Python, t: f32, p0: Vec<f32>, p1: Vec<f32>, p2: Vec<
 }
 
 #[pyfunction]
-fn intersect(_py: Python, p0: Vec<f32>, p1: Vec<f32>, p2: Vec<f32>, p3: Vec<f32>) -> PyResult<Vec<f32>> {
+fn intersect(_py: Python, p0: Vec<f32>, p1: Vec<f32>, p2: Vec<f32>, p3: Vec<f32>) -> PyResult<Option<Vec<f32>>> {
     // Intersect two 2D lines, with the first line defined by p0 to p1,
     // and the second line from p2 to p3.
 
     let line1: Vec<f32> = line_coefficients(p0, p1);
     let line2: Vec<f32> = line_coefficients(p2, p3);
 
-    let intersection: Vec<f32> = intersect_coeffs(line1, line2);
+    let intersection = intersect_coeffs(line1, line2);
 
     Ok(intersection)
 }
