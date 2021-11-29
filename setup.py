@@ -1,8 +1,9 @@
-from distutils.core import setup, Extension
+from setuptools import setup
+from setuptools_rust import Binding, RustExtension
 
 setup(
     name="jkFontGeometry",
-    version="0.1",
+    version="0.2",
     description="Font geometry tools.",
     author="Jens Kutilek",
     url="http://www.kutilek.de/",
@@ -12,12 +13,11 @@ setup(
     package_dir={
         "": "Lib"
     },
-    ext_modules=[
-        Extension(
-            "jkFontGeometry._fastgeometry", [
-                "Lib/jkFontGeometry/_fastgeometry.cpp",
-                "Lib/jkFontGeometry/fastgeometry.cpp"
-            ]
+    rust_extensions=[
+        RustExtension(
+            "jkFontGeometry.fastgeometry",
+            binding=Binding.PyO3
         )
     ],
+    zip_safe=False,
 )
