@@ -47,6 +47,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "jkFontGeometry-fastgeometry"
+version = "0.2.0"
+dependencies = [
+ "pyo3",
+]
+
+[[package]]
 name = "libc"
 version = "0.2.108"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -124,13 +131,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ba508cc11742c0dc5c1659771673afbab7a0efab23aa17e854cbab0837ed0b43"
 dependencies = [
  "unicode-xid",
-]
-
-[[package]]
-name = "pyext-fastgeometry"
-version = "0.1.0"
-dependencies = [
- "pyo3",
 ]
 
 [[package]]
