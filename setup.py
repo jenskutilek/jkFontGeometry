@@ -13,6 +13,10 @@ setup(
     package_dir={
         "": "Lib"
     },
+    install_requires=[
+        "setuptools",
+        "setuptools_rust",
+    ],
     rust_extensions=[
         RustExtension(
             "jkFontGeometry.fastgeometry",
