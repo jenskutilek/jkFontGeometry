@@ -3,12 +3,6 @@ use pyo3::prelude::*;
 
 // internal functions
 
-// fn half_point_internal(point0: Vec<f32>, point1: Vec<f32>) -> Vec<f32> {
-//     let half: Vec<f32> = (0..2).map(|i| (point0[i] + point1[i]) * 0.5).collect();
-
-//     return half
-// }
-
 fn line_coefficients(point0: Vec<f32>, point1: Vec<f32>) -> Vec<f32> {
     // Calculate coefficients a, b, c for a 2D line from point0 to point1
     let mut coefficients: Vec<f32> = Vec::with_capacity(3);
