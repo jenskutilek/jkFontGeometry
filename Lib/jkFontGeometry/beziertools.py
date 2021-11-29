@@ -62,7 +62,7 @@ def getPointListForCubic(ts, pt0, pt1, pt2, pt3):
     """
     Return a list of points for increments of t on the cubic curve defined by pt0, pt1, pt2, pt3.
     """
-    (x0, y0), (x1, y1) = pt1, pt2
+    (x0, y0), (x1, y1) = pt0, pt1
     cx = (x1 - x0) * 3
     cy = (y1 - y0) * 3
     bx = (pt2[0] - x1) * 3 - cx
