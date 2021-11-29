@@ -3,15 +3,15 @@ use pyo3::prelude::*;
 
 // internal functions
 
-fn line_coefficients(point0: Vec<f32>, point1: Vec<f32>) -> Vec<f32> {
+fn line_coefficients(p1: Vec<f32>, p2: Vec<f32>) -> Vec<f32> {
     // Calculate coefficients a, b, c for a 2D line from point0 to point1
     let mut coefficients: Vec<f32> = Vec::with_capacity(3);
     // a
-    coefficients.push(point0[1] - point1[1]);
+    coefficients.push(p1[1] - p2[1]);
     // b
-    coefficients.push(point1[0] - point0[0]);
+    coefficients.push(p2[0] - p1[0]);
     // c
-    coefficients.push(- point0[0] * point1[1] + point1[0] * point1[0]);
+    coefficients.push(-p1[0] * p2[1] + p2[0] * p1[1]);
 
     return coefficients
 }
