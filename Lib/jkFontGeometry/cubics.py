@@ -420,6 +420,8 @@ class SuperCubic(object):
         return self.cubics[index].split_at_t(t)
 
     def split_at_pt_fast(self, pt):
+        if DEBUG_SPLIT:
+            print("SuperCubic.split_at_pt_fast", pt, "->")
         index = 0
         x, y = pt
         a, b, c, d = self.cubics[0].params
@@ -427,14 +429,21 @@ class SuperCubic(object):
         solutions_v = solveCubic(a[0], b[0], c[0], d[0] - x)
         solutions_h = [t for t in solutions_h if 0 <= t < 1]
         solutions_v = [t for t in solutions_v if 0 <= t < 1]
-        if len(solutions_h) == 1:
+        if DEBUG_SPLIT:
+            print(solutions_h, solutions_v)
+        if len(solutions_h) == 1 and solutions_v:
+            # Take the average of both values
             t = (solutions_v[0] + solutions_h[0]) * 0.5
-            # t = solutions_h[0]
         else:
-            print("Multiple solutions found:", solutions_h)
+            print(
+                "    Different number of solutions for h and v:",
+                solutions_h,
+                solutions_v,
+            )
             index, t = self.t_for_point(pt)
+            print("        Choosing via thorough method:", t)
         self._split_index = index
-        return self.cubics[0].split_at_t(t)
+        return self.cubics[index].split_at_t(t)
 
     def split_remainder(self):
         return self.cubics[self._split_index].split_at_t(1.0)
