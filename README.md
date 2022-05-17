@@ -18,8 +18,14 @@ To run mypy:
 MYPYPATH=stubs/ mypy Lib/jkFontGeometry
 ```
 
-To build a wheel with binary code compiled by mypy:
+To build a wheel with binary code compiled by mypyc:
 
 ```bash
-MYPYPATH=stubs/ mypyc Lib/jkFontGeometry
+MYPYPATH=stubs/ python3 setup.py bdist_wheel
+```
+
+or compile in place:
+
+```bash
+MYPYPATH=stubs/ python3 setup.py build_ext --inplace
 ```

@@ -1,7 +1,5 @@
 from typing import Tuple
 
 
+# For type annotations
 Point = Tuple[float, float]
-
-if __name__ == "__main__":
-    print("Hello world")
