@@ -3,10 +3,10 @@ from typing import (
     Callable,
     List,
     SupportsFloat,
-    SupportsIndex,
     Tuple,
     Union
 )
+from typing_extensions import SupportsIndex
 
 Point = Tuple[float, float]
 
