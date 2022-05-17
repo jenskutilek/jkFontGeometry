@@ -4,12 +4,10 @@ import unittest
 from random import random
 
 
-from jkFontGeometry.fastgeometry import (
-    get_cubic_point,
-    get_quadratic_point,
-    half_point,
-    intersect,
-)
+from jkFontGeometry.geometry import getPointOnCubic as get_cubic_point
+# from jkFontGeometry.geometry import get_quadratic_point
+from jkFontGeometry.geometry import half_point
+from jkFontGeometry.geometry import intersect
 
 from jkFontGeometry.geometry import (
     # get_cubic_point as get_cubic_point_slow,
