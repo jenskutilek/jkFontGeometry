@@ -4,8 +4,6 @@ import unittest
 from random import random
 
 
-from jkFontGeometry.geometry import getPointOnCubic as get_cubic_point
-# from jkFontGeometry.geometry import get_quadratic_point
 from jkFontGeometry.geometry import half_point
 from jkFontGeometry.geometry import intersect
 
@@ -17,6 +15,7 @@ from jkFontGeometry.geometry import (
 )
 
 from jkFontGeometry.beziertools import getPointOnCubic as get_cubic_point_slow
+from jkFontGeometry.beziertools import getPointOnCubic as get_cubic_point
 
 
 def random_point():
@@ -29,20 +28,20 @@ def random_point():
 intersect_lines = (
     (
         ((0, 0), (0, 10), (-1, 5), (1, 5)),
-        [0, 5]
+        (0.0, 5.0)
     ),
     (
         ((0, 0), (0, 10), (-1, 4), (1, 6)),
-        [0, 5]
+        (0.0, 5.0)
     ),
     (
         ((0, 0), (0, 10), (-1, 3), (1, 5)),
-        [0, 4]
+        (0.0, 4.0)
     ),
     (
         # Outside of defined line segments
         ((0, 0), (0, 10), (-1, 11), (1, 11)),
-        [0, 11]
+        (0.0, 11.0)
     ),
     (
         # Parallel lines vertical
