@@ -78,7 +78,7 @@ def getPointListForCubic(
     by = (pt2[1] - y1) * 3 - cy
     ax = pt3[0] - x0 - cx - bx
     ay = pt3[1] - y0 - cy - by
-    path = []
+    path: List[Point] = []
     for t in ts:
         t3 = t**3
         t2 = t * t
@@ -111,7 +111,7 @@ def getExtremaForCubic(
        end point of the curve.
     :type include_start_end: bool
     """
-    (ax, ay), (bx, by), c, d = calcCubicParameters(pt0, pt1, pt2, pt3)
+    (ax, ay), (bx, by), c, _d = calcCubicParameters(pt0, pt1, pt2, pt3)
     ax *= 3.0
     ay *= 3.0
     bx *= 2.0
@@ -168,7 +168,7 @@ def getInflectionsForCubic(
     pt0: Point, pt1: Point, pt2: Point, pt3: Point
 ) -> List[float]:
     # After https://github.com/mekkablue/InsertInflections
-    roots = []
+    roots: List[float] = []
 
     x1, y1 = pt0
     x2, y2 = pt1
@@ -218,7 +218,7 @@ def getPointListForQuadratic(
     by pt0, pt1, pt2.
     """
     (x0, y0), (x1, y1), (x2, y2) = pt0, pt1, pt2
-    path = []
+    path: List[Point] = []
     for t in ts:
         t0 = (1 - t) * (1 - t)
         t1 = 2 * (1 - t) * t
@@ -251,7 +251,7 @@ def getExtremaForQuadratic(
                               end point of the curve.
     :type include_start_end:  bool
     """
-    (ax, ay), (bx, by), c = calcQuadraticParameters(pt0, pt1, pt2)
+    (ax, ay), (bx, by), _c = calcQuadraticParameters(pt0, pt1, pt2)
     ax *= 2.0
     ay *= 2.0
     roots = []

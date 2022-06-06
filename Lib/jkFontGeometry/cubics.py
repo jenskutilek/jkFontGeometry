@@ -298,7 +298,7 @@ class SuperCubic:
         # TODO: Cache previous pt so the search can start there?
         return self._t_points.get(pt, self.calculate_t_for_point(pt))
 
-    def calculate_t_for_point(self, pt) -> Optional[Tuple[int, float]]:
+    def calculate_t_for_point(self, pt: Point) -> Optional[Tuple[int, float]]:
         # Calculate the t value for the closest distance of point pt to a
         # series of cubic Beziers
 
@@ -317,9 +317,9 @@ class SuperCubic:
             if p0x - 1 <= x <= p0x + 1 and p0y - 1 <= y <= p0y + 1:
                 self._split_index = index
                 self._t_step = 0
-                tx, ty = get_cubic_point(
-                    0, cubic.p0, cubic.p1, cubic.p2, cubic.p3
-                )
+                # tx, ty = get_cubic_point(
+                #     0, cubic.p0, cubic.p1, cubic.p2, cubic.p3
+                # )
                 # print(
                 #     "                "
                 #     "Fast Found t = 0 -> (%0.3f, %0.3f)" % (tx, ty)
@@ -328,9 +328,9 @@ class SuperCubic:
             elif p3x - 1 <= x <= p3x + 1 and p3y - 1 <= y <= p3y + 1:
                 self._split_index = index
                 self._t_step = cubic.num_cubic_points
-                tx, ty = get_cubic_point(
-                    1, cubic.p0, cubic.p1, cubic.p2, cubic.p3
-                )
+                # tx, ty = get_cubic_point(
+                #     1, cubic.p0, cubic.p1, cubic.p2, cubic.p3
+                # )
                 # print(
                 #     "                "
                 #     "Fast Found t = 1 -> (%0.3f, %0.3f)" % (tx, ty)
