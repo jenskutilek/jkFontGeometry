@@ -1,4 +1,5 @@
 from setuptools import setup
+
 # from setuptools_rust import Binding, RustExtension
 from mypyc.build import mypycify
 
@@ -9,7 +10,9 @@ setup(
     #         binding=Binding.PyO3
     #     )
     # ],
-    ext_modules=mypycify([
-       "Lib/jkFontGeometry/__init__.py",
-    ]),
+    ext_modules=mypycify(
+        [
+            "Lib/jkFontGeometry/__init__.py",
+        ]
+    ),
 )
