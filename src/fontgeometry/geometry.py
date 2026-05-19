@@ -14,20 +14,20 @@ Slow geometry -- when the rust extension is not available.
 
 def angle_between_points(
     p0: "PointTuple", p1: "PointTuple", do_round: bool = False
-) -> float | int:
+) -> float:
     phi = atan2(p1[1] - p0[1], p1[0] - p0[0])
     if do_round:
-        return int(round(phi))
+        return round(phi)
     else:
         return phi
 
 
 def distance_between_points(
     p0: "PointTuple", p1: "PointTuple", do_round: bool = False
-) -> float | int:
+) -> float:
     d = hypot(p1[1] - p0[1], p1[0] - p0[0])
     if do_round:
-        return int(round(d))
+        return round(d)
     else:
         return d
 
@@ -44,12 +44,12 @@ def half_point(
 
 def round_point(pt: "PointTuple") -> "PointTuple":
     # FIXME: Use proper rounding
-    return (int(round(pt[0])), int(round(pt[1])))
+    return (round(pt[0]), round(pt[1]))
 
 
 def round_point_conditional(pt: "PointTuple", do_round: bool = True) -> "PointTuple":
     if do_round:
-        return (int(round(pt[0])), int(round(pt[1])))
+        return (round(pt[0]), round(pt[1]))
     else:
         return pt
 
@@ -93,7 +93,7 @@ def triangle_area(
 ) -> float:
     area = (b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1])
     if do_round:
-        return int(round(area))
+        return round(area)
     else:
         return area
 
