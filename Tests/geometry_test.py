@@ -5,16 +5,7 @@ from time import time
 import pytest
 
 from fontgeometry.beziertools import getPointOnCubic as get_cubic_point
-from fontgeometry.beziertools import getPointOnCubic as get_cubic_point_slow
 from fontgeometry.geometry import half_point, intersect
-from fontgeometry.geometry import (
-    # get_cubic_point as get_cubic_point_slow,
-    # get_quadratic_point as get_quadratic_point_slow,
-    half_point as half_point_slow,
-)
-from fontgeometry.geometry import (
-    intersect as intersect_slow,
-)
 
 
 def random_point() -> tuple[float, float]:
@@ -65,12 +56,6 @@ class FastgeometryTests(unittest.TestCase):
         for p0, p1 in points:
             _result = half_point(p0, p1)
         stop = time()
-        print("Rs:", stop - start)
-
-        start = time()
-        for p0, p1 in points:
-            _result = half_point_slow(p0, p1)
-        stop = time()
         print("Py:", stop - start)
 
     def test_intersect(self) -> None:
@@ -94,12 +79,6 @@ class FastgeometryTests(unittest.TestCase):
         for p0, p1, p2, p3 in points:
             _result = intersect(p0, p1, p2, p3)
         stop = time()
-        print("Rs:", stop - start)
-
-        start = time()
-        for p0, p1, p2, p3 in points:
-            _result = intersect_slow(p0, p1, p2, p3)
-        stop = time()
         print("Py:", stop - start)
 
     def test_get_cubic_point(self) -> None:
@@ -116,13 +95,7 @@ class FastgeometryTests(unittest.TestCase):
 
         start = time()
         for t, p0, p1, p2, p3 in points:
-            result = get_cubic_point(t, p0, p1, p2, p3)
-        stop = time()
-        print("Rs:", stop - start)
-
-        start = time()
-        for t, p0, p1, p2, p3 in points:
-            _result = get_cubic_point_slow(t, p0, p1, p2, p3)
+            _result = get_cubic_point(t, p0, p1, p2, p3)
         stop = time()
         print("Py:", stop - start)
         # assert 0 == 1
