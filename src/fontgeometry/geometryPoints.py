@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from fontgeometry import geometry
+from fontgeometry.rounding import round_hup
 
 if TYPE_CHECKING:
     from fontgeometry.typing import PointTuple
@@ -27,13 +28,13 @@ def half_point(p0, p1, do_round=False):
 
 def round_point(pt) -> "PointTuple":
     # FIXME: Use proper rounding
-    return (int(round(pt.x)), int(round(pt.y)))
+    return (round_hup(pt.x), round_hup(pt.y))
 
 
 def round_point_conditional(pt, do_round: bool = True):
     # FIXME: Returns a different type based on do_round
     if do_round:
-        return (int(round(pt.x)), int(round(pt.y)))
+        return (round_hup(pt.x), round_hup(pt.y))
     else:
         return pt
 

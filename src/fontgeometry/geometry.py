@@ -1,6 +1,8 @@
 from math import atan2, hypot, pi, sin
 from typing import TYPE_CHECKING
 
+from fontgeometry.rounding import round_hup
+
 if TYPE_CHECKING:
     from fontgeometry.typing import PointTuple
 
@@ -13,7 +15,7 @@ def angle_between_points(
 ) -> float:
     phi = atan2(p1[1] - p0[1], p1[0] - p0[0])
     if do_round:
-        return round(phi)
+        return round_hup(phi)
     else:
         return phi
 
@@ -23,7 +25,7 @@ def distance_between_points(
 ) -> float:
     d = hypot(p1[1] - p0[1], p1[0] - p0[0])
     if do_round:
-        return round(d)
+        return round_hup(d)
     else:
         return d
 
@@ -39,13 +41,12 @@ def half_point(
 
 
 def round_point(pt: "PointTuple") -> "PointTuple":
-    # FIXME: Use proper rounding
-    return (round(pt[0]), round(pt[1]))
+    return (round_hup(pt[0]), round_hup(pt[1]))
 
 
 def round_point_conditional(pt: "PointTuple", do_round: bool = True) -> "PointTuple":
     if do_round:
-        return (round(pt[0]), round(pt[1]))
+        return (round_hup(pt[0]), round_hup(pt[1]))
     else:
         return pt
 
@@ -89,7 +90,7 @@ def triangle_area(
 ) -> float:
     area = (b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1])
     if do_round:
-        return round(area)
+        return round_hup(area)
     else:
         return area
 

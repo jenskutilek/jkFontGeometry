@@ -9,6 +9,7 @@ from fontgeometry.beziertools import (
     getPointOnCubic,
 )
 from fontgeometry.ftbeziertools import calcCubicParameters, solveCubic
+from fontgeometry.rounding import round_hup
 
 if TYPE_CHECKING:
     from fontgeometry.typing import PointTuple
@@ -81,7 +82,7 @@ class Cubic:
         Returns:
             int: The number of steps
         """
-        return round(self.length / self.raster_length)
+        return round_hup(self.length / self.raster_length)
 
     @property
     def cubic_points(self) -> "list[PointTuple]":
@@ -330,10 +331,10 @@ class SuperCubic:
 
         for index in range(self._split_index, len(self.cubics)):
             cubic = self.cubics[index]
-            pt1x = round(cubic.pt1[0])
-            pt1y = round(cubic.pt1[1])
-            pt4x = round(cubic.pt4[0])
-            pt4y = round(cubic.pt4[1])
+            pt1x = round_hup(cubic.pt1[0])
+            pt1y = round_hup(cubic.pt1[1])
+            pt4x = round_hup(cubic.pt4[0])
+            pt4y = round_hup(cubic.pt4[1])
 
             if pt1x - 1 <= x <= pt1x + 1 and pt1y - 1 <= y <= pt1y + 1:
                 self._split_index = index
