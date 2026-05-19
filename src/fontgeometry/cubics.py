@@ -209,13 +209,10 @@ class SuperCubic:
         # Keep track of current t for faster searching
         self._t_step = 0
 
-        self._inflection_points: "list[PointTuple] | None" = None
-        self._extremum_points: "list[PointTuple] | None" = None
-
     def __repr__(self) -> str:
         return "<SuperCubic len=%i>" % len(self.cubics)
 
-    @property
+    @cached_property
     def inflection_points(self) -> "list[PointTuple]":
         """
         Return all inflection points from the sub-cubics. The points are not necessarily
@@ -224,14 +221,13 @@ class SuperCubic:
         Returns:
             list[PointTuple]: The list of inflection points
         """
-        if self._inflection_points is None:
-            self._inflection_points = []
-            for cubic in self.cubics:
-                if cubic.inflection_points:
-                    self._inflection_points.extend(cubic.inflection_points)
-        return self._inflection_points
+        inflection_points = []
+        for cubic in self.cubics:
+            if cubic.inflection_points:
+                inflection_points.extend(cubic.inflection_points)
+        return inflection_points
 
-    @property
+    @cached_property
     def extremum_points(self) -> "list[PointTuple]":
         """
         Return all extremum points from the sub-cubics. The points are not necessarily
@@ -240,12 +236,11 @@ class SuperCubic:
         Returns:
             list[PointTuple]: The list of extremum points
         """
-        if self._extremum_points is None:
-            self._extremum_points = []
-            for cubic in self.cubics:
-                if cubic.extremum_points:
-                    self._extremum_points.extend(cubic.extremum_points)
-        return self._extremum_points
+        extremum_points = []
+        for cubic in self.cubics:
+            if cubic.extremum_points:
+                extremum_points.extend(cubic.extremum_points)
+        return extremum_points
 
     def add_cubic_from_points(
         self,
