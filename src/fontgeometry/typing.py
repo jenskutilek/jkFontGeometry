@@ -1,1 +1,1 @@
-Point = tuple[float, float]
+TuplePoint = tuple[float, float]
