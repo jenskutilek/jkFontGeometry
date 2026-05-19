@@ -233,7 +233,13 @@ class SuperCubic:
 
     @property
     def inflection_points(self) -> "list[PointTuple]":
-        # All inflection points from the sub-cubics
+        """
+        Return all inflection points from the sub-cubics. The points are not necessarily
+        in order. Explicit inflection points (i.e. between cubics) are omitted.
+
+        Returns:
+            list[PointTuple]: The list of inflection points
+        """
         if self._inflection_points is None:
             self._inflection_points = []
             for cubic in self.cubics:
@@ -243,7 +249,13 @@ class SuperCubic:
 
     @property
     def extremum_points(self) -> "list[PointTuple]":
-        # All extremum points from the sub-cubics
+        """
+        Return all extremum points from the sub-cubics. The points are not necessarily
+        in order.
+
+        Returns:
+            list[PointTuple]: The list of extremum points
+        """
         if self._extremum_points is None:
             self._extremum_points = []
             for cubic in self.cubics:
@@ -259,12 +271,34 @@ class SuperCubic:
         pt4: "PointTuple",
         raster_length: float = 0.25,
     ) -> None:
+        """
+        Add a cubic by specifying four points.
+
+        Args:
+            pt1 (PointTuple): The first point
+            pt2 (PointTuple): The second point
+            pt3 (PointTuple): The third point
+            pt4 (PointTuple): The fourth point
+            raster_length (float, optional): The raster length. Defaults to 0.25.
+        """
         cubic = Cubic(pt1, pt2, pt3, pt4, raster_length)
         self.cubics.append(cubic)
 
     def add_cubic_from_point_tuple(
         self, point_tuple: "Sequence[PointTuple]", raster_length: float = 0.25
     ) -> None:
+        """
+        Add a cubic by specifying a sequence of points. If the sequence has two points,
+        it is assumed that it is a line, and is converted to a flat curve before adding
+        it.
+
+        Args:
+            point_tuple (Sequence[PointTuple]): The points
+            raster_length (float, optional): The raster length. Defaults to 0.25.
+
+        Raises:
+            ValueError: If the sequence has an unhandled number of points
+        """
         num_points = len(point_tuple)
         if num_points == 4:
             pt1, pt2, pt3, pt4 = point_tuple
@@ -285,6 +319,16 @@ class SuperCubic:
         self.add_cubic_from_points(pt1, pt2, pt3, pt4, raster_length)
 
     def t_for_point(self, pt: "PointTuple") -> tuple[int, float] | None:
+        """
+        Return the index of the sub-cubics, and the t value inside it for the given
+        point.
+
+        Args:
+            pt (PointTuple): The point for which to find t
+
+        Returns:
+            tuple[int, float] | None: The cubics index and t
+        """
         # TODO: Cache previous pt so the search can start there?
         return self._t_points.get(pt, self.calculate_t_for_point(pt))
 
