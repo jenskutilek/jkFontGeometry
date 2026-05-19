@@ -25,7 +25,7 @@ class CubicSegments:
                 # The super cubic is empty, we can just add the current segment
                 sc.add_cubic_from_point_tuple(segment)
             else:
-                if sc.cubics[-1].p3 == segment[0]:
+                if sc.cubics[-1].pt3 == segment[0]:
                     # The current cubic is a continuation of the previous cubic
                     sc.add_cubic_from_point_tuple(segment)
                 else:
