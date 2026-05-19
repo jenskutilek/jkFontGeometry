@@ -1,3 +1,4 @@
+from functools import cached_property
 from math import hypot
 from typing import TYPE_CHECKING, Sequence
 
@@ -36,77 +37,60 @@ class Cubic:
         self._cubic_points: "list[PointTuple] | None" = None
         self._num_cubic_points: int | None = None
 
-        # The calculated estimated curve length
-        self._estimated_length: float | None = None
-
-        # The number of steps to achieve the desired point distances
-        self._raster_steps: int | None = None
-
         # The current split point (will be moved along the curve when splitting)
         self._t = 0.0
-
-        # Cache for Cubic params (a, b, c, d)
-        self._params: "tuple[PointTuple, PointTuple, PointTuple, PointTuple] | None" = (
-            None
-        )
-
-        # Cache for inflection points
-        self._inflections: list[float] | None = None
-        self._inflection_points: "list[PointTuple] | None" = None
-
-        # Cache for extremum points
-        self._extrema: list[float] | None = None
-        self._extremum_points: "list[PointTuple] | None" = None
 
     def __repr__(self) -> str:
         return "<Cubic pt1=%s, pt4=%s>" % (self.pt1, self.pt4)
 
-    @property
+    @cached_property
     def extrema(self) -> list[float]:
-        if self._extrema is None:
-            self._extrema = self.calculate_extrema()
-        return self._extrema
+        return self.calculate_extrema()
 
-    @property
+    @cached_property
     def extremum_points(self) -> "list[PointTuple]":
-        if self._extremum_points is None:
-            self._extremum_points = self.calculate_extremum_points()
-        return self._extremum_points
+        return self.calculate_extremum_points()
 
-    @property
+    @cached_property
     def inflections(self) -> list[float]:
-        if self._inflections is None:
-            self._inflections = self.calculate_inflections()
-        return self._inflections
+        return self.calculate_inflections()
 
-    @property
+    @cached_property
     def inflection_points(self) -> "list[PointTuple]":
-        if self._inflection_points is None:
-            self._inflection_points = self.calculate_inflection_points()
-        return self._inflection_points
+        return self.calculate_inflection_points()
 
-    @property
+    @cached_property
     def length(self) -> float:
-        if self._estimated_length is None:
-            self._estimated_length = estimateCubicCurveLength(
-                self.pt1, self.pt2, self.pt3, self.pt4
-            )
-        return self._estimated_length
+        """
+        The calculated estimated curve length.
 
-    @property
+        Returns:
+            float: The curve length
+        """
+        return estimateCubicCurveLength(self.pt1, self.pt2, self.pt3, self.pt4)
+
+    @cached_property
     def params(self) -> "tuple[PointTuple, PointTuple, PointTuple, PointTuple]":
-        if self._params is None:
-            self._params = calcCubicParameters(self.pt1, self.pt2, self.pt3, self.pt4)
-        return self._params
+        return calcCubicParameters(self.pt1, self.pt2, self.pt3, self.pt4)
 
-    @property
+    @cached_property
     def raster_steps(self) -> int:
-        if self._raster_steps is None:
-            self._raster_steps = int(round(self.length / self.raster_length))
-        return self._raster_steps
+        """
+        The number of steps to achieve the desired point distances.
+
+        Returns:
+            int: The number of steps
+        """
+        return round(self.length / self.raster_length)
 
     @property
     def cubic_points(self) -> "list[PointTuple]":
+        """
+        The list of points on the cubic, with estimated raster_length distance
+
+        Returns:
+            list[PointTuple]: _description_
+        """
         # Calculate or return the cached list of t to point mappings.
         if self._cubic_points is None:
             self._cubic_points = self.calculate_cubic_points()
