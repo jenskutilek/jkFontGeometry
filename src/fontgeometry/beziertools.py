@@ -1,13 +1,12 @@
 from math import sqrt
 from typing import TYPE_CHECKING
 
-from fontTools.misc.bezierTools import (
+from fontgeometry.ftbeziertools import (
     calcCubicParameters,
     calcQuadraticParameters,
     epsilon,
     solveQuadratic,
 )
-
 from fontgeometry.geometry import distance_between_points, half_point
 
 if TYPE_CHECKING:

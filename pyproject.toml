@@ -18,9 +18,7 @@ classifiers = [
 ]
 
 requires-python = ">=3.12"
-dependencies = [
-    "fontTools >= 4.63.0",
-]
+dependencies = []
 
 [dependency-groups]
 dev = [
