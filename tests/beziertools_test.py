@@ -1,23 +1,10 @@
-import pytest
 import unittest
 
-
-from jkFontGeometry.beziertools import (
-    getPointListForCubic,
-)
-
+from fontgeometry.beziertools import getPointListForCubic
 
 intersect_lines = (
-    (
-        [0, 1],
-        ((0, 0), (0, 10), (-1, 5), (1, 5)),
-        [(0, 0), (1, 5)]
-    ),
-    (
-        [0, 0.5, 1],
-        ((0, 0), (1, 0), (2, 0), (3, 0)),
-        [(0, 0), (1.5, 0), (3, 0)]
-    ),
+    ([0.0, 1.0], ((0, 0), (0, 10), (-1, 5), (1, 5)), [(0, 0), (1, 5)]),
+    ([0.0, 0.5, 1], ((0, 0), (1, 0), (2, 0), (3, 0)), [(0, 0), (1.5, 0), (3, 0)]),
 )
 
 

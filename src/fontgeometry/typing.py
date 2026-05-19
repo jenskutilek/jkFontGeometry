@@ -1,0 +1,1 @@
+PointTuple = tuple[float, float]

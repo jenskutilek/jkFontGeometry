@@ -1,14 +1,8 @@
-import jkFontGeometry
-
 from random import random
 from time import time
 
-# from jkFontGeometry.geometry import intersect
-# from jkFontGeometry.beziertools import getPointOnCubic
-
-
-intersect = jkFontGeometry.geometry.intersect
-getPointOnCubic = jkFontGeometry.geometry.getPointOnCubic
+from fontgeometry.beziertools import getPointOnCubic
+from fontgeometry.geometry import intersect
 
 
 def random_point():
@@ -39,7 +33,7 @@ print("Time:", stop - start)
 
 print("Doing 10000 getPointOnCubic ...")
 
-points = [
+t_points = [
     (
         random(),
         random_point(),
@@ -51,7 +45,7 @@ points = [
 ]
 
 start = time()
-for t, p0, p1, p2, p3 in points:
+for t, p0, p1, p2, p3 in t_points:
     result = getPointOnCubic(t, p0, p1, p2, p3)
 stop = time()
 print("Time:", stop - start)

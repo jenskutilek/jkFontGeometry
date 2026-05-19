@@ -1,18 +1,23 @@
-from jkFontGeometry.cubics import SuperCubic
+from typing import TYPE_CHECKING, Any
+
+from fontgeometry.cubics import SuperCubic
+
+if TYPE_CHECKING:
+    from fontgeometry.typing import PointTuple
 
 
 class CubicSegments:
-    def __init__(self, layer):
+    def __init__(self, layer: Any) -> None:
         self.layer = layer
-        self.segments = []
+        self.segments: "list[list[PointTuple]]" = []
 
-    def extract_segments(self):
-        # Extract the segments from the layer without using a pen.
-        # See ExtractSegmentsPen for a pen-oriented object.
+    def extract_segments(self) -> None:
+        # Extract the segments from the layer.
+        # TODO: Should this only extract cubic curves?
 
         raise NotImplementedError
 
-    def to_supercubics(self):
+    def to_supercubics(self) -> None:
         self.super_cubics = []
         sc = SuperCubic()
         for segment in self.segments:
@@ -20,7 +25,7 @@ class CubicSegments:
                 # The super cubic is empty, we can just add the current segment
                 sc.add_cubic_from_point_tuple(segment)
             else:
-                if sc.cubics[-1].p3 == segment[0]:
+                if sc.cubics[-1].pt3 == segment[0]:
                     # The current cubic is a continuation of the previous cubic
                     sc.add_cubic_from_point_tuple(segment)
                 else:

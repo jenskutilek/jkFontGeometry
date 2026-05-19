@@ -1,12 +1,11 @@
 # MenuTitle: Extract Segments
-from jkFontGeometry.extract import CubicSegments
-
+from fontgeometry.extract import CubicSegments
 
 DEBUG_EXTRACT = True
 
 
 try:
-    from objectsGS import GSCURVE, GSLINE, GSOFFCURVE
+    from GlyphsApp import GSCURVE, GSLINE, GSOFFCURVE
 
     CURVE = GSCURVE
     LINE = GSLINE
