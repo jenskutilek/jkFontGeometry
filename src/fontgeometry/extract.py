@@ -12,8 +12,8 @@ class CubicSegments:
         self.segments: "list[list[PointTuple]]" = []
 
     def extract_segments(self) -> None:
-        # Extract the segments from the layer without using a pen.
-        # See ExtractSegmentsPen for a pen-oriented object.
+        # Extract the segments from the layer.
+        # TODO: Should this only extract cubic curves?
 
         raise NotImplementedError
 
