@@ -1,18 +1,20 @@
-from jkFontGeometry.cubics import SuperCubic
+from typing import Any
+
+from fontgeometry.cubics import SuperCubic
 
 
 class CubicSegments:
-    def __init__(self, layer):
+    def __init__(self, layer: Any) -> None:
         self.layer = layer
         self.segments = []
 
-    def extract_segments(self):
+    def extract_segments(self) -> None:
         # Extract the segments from the layer without using a pen.
         # See ExtractSegmentsPen for a pen-oriented object.
 
         raise NotImplementedError
 
-    def to_supercubics(self):
+    def to_supercubics(self) -> None:
         self.super_cubics = []
         sc = SuperCubic()
         for segment in self.segments:

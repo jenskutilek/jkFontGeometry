@@ -1,14 +1,15 @@
 from math import sqrt
+from typing import List
+
 from fontTools.misc.bezierTools import (
     calcCubicParameters,
     calcQuadraticParameters,
     epsilon,
     solveQuadratic,
 )
-from jkFontGeometry.geometry import distance_between_points, half_point
-from jkFontGeometry import Point
-from typing import List
 
+from fontgeometry.geometry import distance_between_points, half_point
+from fontgeometry.typing import Point
 
 # Adapted from robofab.pens.filterPen
 
@@ -33,9 +34,7 @@ def estimateCubicCurveLength(
     return length
 
 
-def getPointOnCubic(
-    t: float, pt0: Point, pt1: Point, pt2: Point, pt3: Point
-) -> Point:
+def getPointOnCubic(t: float, pt0: Point, pt1: Point, pt2: Point, pt3: Point) -> Point:
     """
     Return the point for t on the cubic curve defined by pt0, pt1, pt2, pt3.
     """

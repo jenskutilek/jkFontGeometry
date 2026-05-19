@@ -1,16 +1,17 @@
-from fontTools.misc.bezierTools import calcCubicParameters, solveCubic
 from math import hypot
+from typing import TYPE_CHECKING
 
-from jkFontGeometry.beziertools import (
+from fontTools.misc.bezierTools import calcCubicParameters, solveCubic
+
+from fontgeometry.beziertools import (
     estimateCubicCurveLength,
-    getInflectionsForCubic,
     getExtremaForCubic,
+    getInflectionsForCubic,
 )
-from jkFontGeometry.beziertools import getPointOnCubic as get_cubic_point
+from fontgeometry.beziertools import getPointOnCubic as get_cubic_point
 
-from jkFontGeometry import Point
-from typing import Dict, List, Optional, Tuple
-
+if TYPE_CHECKING:
+    from fontgeometry.typing import Point
 
 DEBUG_SPLIT = False
 
@@ -18,10 +19,10 @@ DEBUG_SPLIT = False
 class Cubic:
     def __init__(
         self,
-        p0: Point,
-        p1: Point,
-        p2: Point,
-        p3: Point,
+        p0: "Point",
+        p1: "Point",
+        p2: "Point",
+        p3: "Point",
         raster_length: float = 0.25,
     ) -> None:
         self.p0 = p0
@@ -35,53 +36,53 @@ class Cubic:
 
         # The list of points on the cubic, with estimated raster_length
         # distance
-        self._cubic_points: Optional[List[Point]] = None
-        self._num_cubic_points: Optional[int] = None
+        self._cubic_points: "list[Point] | None" = None
+        self._num_cubic_points: int | None = None
 
         # The calculated estimated curve length
-        self._estimated_length: Optional[float] = None
+        self._estimated_length: float | None = None
 
         # The number of steps to achieve the desired point distances
-        self._raster_steps: Optional[int] = None
+        self._raster_steps: int | None = None
 
         # The current split point (will be moved along the curve when
         # splitting)
         self._t = 0.0
 
         # Cache for Cubic params (a, b, c, d)
-        self._params: Optional[Tuple[Point, Point, Point, Point]] = None
+        self._params: "tuple[Point, Point, Point, Point] | None" = None
 
         # Cache for inflection points
-        self._inflections: Optional[List[float]] = None
-        self._inflection_points: Optional[List[Point]] = None
+        self._inflections: list[float] | None = None
+        self._inflection_points: "list[Point] | None" = None
 
         # Cache for extremum points
-        self._extrema: Optional[List[float]] = None
-        self._extremum_points: Optional[List[Point]] = None
+        self._extrema: list[float] | None = None
+        self._extremum_points: "list[Point] | None" = None
 
     def __repr__(self) -> str:
         return "<Cubic p0=%s, p3=%s>" % (self.p0, self.p3)
 
     @property
-    def extrema(self) -> List[float]:
+    def extrema(self) -> list[float]:
         if self._extrema is None:
             self._extrema = self.calculate_extrema()
         return self._extrema
 
     @property
-    def extremum_points(self) -> List[Point]:
+    def extremum_points(self) -> "list[Point]":
         if self._extremum_points is None:
             self._extremum_points = self.calculate_extremum_points()
         return self._extremum_points
 
     @property
-    def inflections(self) -> List[float]:
+    def inflections(self) -> list[float]:
         if self._inflections is None:
             self._inflections = self.calculate_inflections()
         return self._inflections
 
     @property
-    def inflection_points(self) -> List[Point]:
+    def inflection_points(self) -> "list[Point]":
         if self._inflection_points is None:
             self._inflection_points = self.calculate_inflection_points()
         return self._inflection_points
@@ -95,11 +96,9 @@ class Cubic:
         return self._estimated_length
 
     @property
-    def params(self) -> Tuple[Point, Point, Point, Point]:
+    def params(self) -> "tuple[Point, Point, Point, Point]":
         if self._params is None:
-            self._params = calcCubicParameters(
-                self.p0, self.p1, self.p2, self.p3
-            )
+            self._params = calcCubicParameters(self.p0, self.p1, self.p2, self.p3)
         return self._params
 
     @property
@@ -109,7 +108,7 @@ class Cubic:
         return self._raster_steps
 
     @property
-    def cubic_points(self) -> List[Point]:
+    def cubic_points(self) -> "list[Point]":
         # Calculate or return the cached list of t to point mappings.
         if self._cubic_points is None:
             self._cubic_points = self.calculate_cubic_points()
@@ -123,16 +122,12 @@ class Cubic:
             self._num_cubic_points = len(self._cubic_points) - 1
         return self._num_cubic_points
 
-    def calculate_cubic_points(self) -> List[Point]:
+    def calculate_cubic_points(self) -> "list[Point]":
         # Return a list of point coordinates for the cubic curve according to
         # the current raster_steps value
         # st = time()
         t_list = []
-        if (
-            self.raster_steps < 2
-            or (self.p0 == self.p1)
-            and (self.p2 == self.p3)
-        ):
+        if self.raster_steps < 2 or (self.p0 == self.p1) and (self.p2 == self.p3):
             t_list = [self.p0, self.p3]
         else:
             step = 1 / self.raster_steps
@@ -145,7 +140,7 @@ class Cubic:
         # print("calculate_cubic_points: %0.3f ms" % ((et-st)*1000))
         return t_list
 
-    def calculate_extrema(self) -> List[float]:
+    def calculate_extrema(self) -> list[float]:
         return getExtremaForCubic(
             self.p0,
             self.p1,
@@ -156,17 +151,16 @@ class Cubic:
             include_start_end=True,
         )
 
-    def calculate_extremum_points(self) -> List[Point]:
+    def calculate_extremum_points(self) -> "list[Point]":
         return [
-            get_cubic_point(t, self.p0, self.p1, self.p2, self.p3)
-            for t in self.extrema
+            get_cubic_point(t, self.p0, self.p1, self.p2, self.p3) for t in self.extrema
         ]
 
-    def calculate_inflections(self) -> List[float]:
+    def calculate_inflections(self) -> list[float]:
         # TODO: Inflections "between" segments
         return getInflectionsForCubic(self.p0, self.p1, self.p2, self.p3)
 
-    def calculate_inflection_points(self) -> List[Point]:
+    def calculate_inflection_points(self) -> "list[Point]":
         return [
             get_cubic_point(t, self.p0, self.p1, self.p2, self.p3)
             for t in self.inflections
@@ -175,7 +169,7 @@ class Cubic:
     def reset_split(self) -> None:
         self._t = 0.0
 
-    def split_at_t(self, t: float) -> Tuple[Point, Point, Point, Point]:
+    def split_at_t(self, t: float) -> "tuple[Point, Point, Point, Point]":
 
         # From https://stackoverflow.com/questions/878862/drawing-part-of-a-bé
         # zier-curve-by-reusing-a-basic-bézier-curve-function
@@ -222,27 +216,26 @@ class Cubic:
 
 
 class SuperCubic:
-
     # Collection of multiple Cubic segments
 
     def __init__(self) -> None:
-        self.cubics: List[Cubic] = []
+        self.cubics: list[Cubic] = []
         self._split_index = 0
 
         # The cached map of t to point
-        self._t_points: Dict[Point, Tuple[int, float]] = {}
+        self._t_points: "dict[Point, tuple[int, float]]" = {}
 
         # Keep track of current t for faster searching
         self._t_step = 0
 
-        self._inflection_points: Optional[List[Point]] = None
-        self._extremum_points: Optional[List[Point]] = None
+        self._inflection_points: "list[Point] | None" = None
+        self._extremum_points: "list[Point] | None" = None
 
     def __repr__(self) -> str:
         return "<SuperCubic len=%i>" % len(self.cubics)
 
     @property
-    def inflection_points(self) -> List[Point]:
+    def inflection_points(self) -> "list[Point]":
         # All inflection points from the sub-cubics
         if self._inflection_points is None:
             self._inflection_points = []
@@ -252,7 +245,7 @@ class SuperCubic:
         return self._inflection_points
 
     @property
-    def extremum_points(self) -> List[Point]:
+    def extremum_points(self) -> "list[Point]":
         # All extremum points from the sub-cubics
         if self._extremum_points is None:
             self._extremum_points = []
@@ -263,17 +256,17 @@ class SuperCubic:
 
     def add_cubic_from_points(
         self,
-        p0: Point,
-        p1: Point,
-        p2: Point,
-        p3: Point,
+        p0: "Point",
+        p1: "Point",
+        p2: "Point",
+        p3: "Point",
         raster_length: float = 0.25,
     ) -> None:
         cubic = Cubic(p0, p1, p2, p3, raster_length)
         self.cubics.append(cubic)
 
     def add_cubic_from_point_tuple(
-        self, point_tuple: List[Point], raster_length: float = 0.25
+        self, point_tuple: "list[Point]", raster_length: float = 0.25
     ) -> None:
         num_points = len(point_tuple)
         if num_points == 4:
@@ -294,11 +287,11 @@ class SuperCubic:
             raise ValueError
         self.add_cubic_from_points(p0, p1, p2, p3, raster_length)
 
-    def t_for_point(self, pt: Point) -> Optional[Tuple[int, float]]:
+    def t_for_point(self, pt: "Point") -> tuple[int, float] | None:
         # TODO: Cache previous pt so the search can start there?
         return self._t_points.get(pt, self.calculate_t_for_point(pt))
 
-    def calculate_t_for_point(self, pt: Point) -> Optional[Tuple[int, float]]:
+    def calculate_t_for_point(self, pt: "Point") -> tuple[int, float] | None:
         # Calculate the t value for the closest distance of point pt to a
         # series of cubic Beziers
 
@@ -339,7 +332,7 @@ class SuperCubic:
 
         # Take the long road
 
-        prev_dist: Optional[float] = None
+        prev_dist: float | None = None
         for index in range(self._split_index, len(self.cubics)):
             cubic = self.cubics[index]
             self._split_index = index
@@ -389,7 +382,7 @@ class SuperCubic:
     def reset_t(self) -> None:
         self._t_step = 0
 
-    def split_at_pt(self, pt: Point) -> Tuple[Point, Point, Point, Point]:
+    def split_at_pt(self, pt: "Point") -> "tuple[Point, Point, Point, Point]":
         if DEBUG_SPLIT:
             print("SuperCubic.split_at_pt", pt, "->")
         index_t = self.t_for_point(pt)
@@ -406,7 +399,7 @@ class SuperCubic:
         # self._split_index = index
         return self.cubics[index].split_at_t(t)
 
-    def split_at_pt_fast(self, pt: Point) -> Tuple[Point, Point, Point, Point]:
+    def split_at_pt_fast(self, pt: "Point") -> "tuple[Point, Point, Point, Point]":
         if DEBUG_SPLIT:
             print("SuperCubic.split_at_pt_fast", pt, "->")
         index = 0
@@ -436,5 +429,5 @@ class SuperCubic:
         self._split_index = index
         return self.cubics[index].split_at_t(t)
 
-    def split_remainder(self) -> Tuple[Point, Point, Point, Point]:
+    def split_remainder(self) -> "tuple[Point, Point, Point, Point]":
         return self.cubics[self._split_index].split_at_t(1.0)

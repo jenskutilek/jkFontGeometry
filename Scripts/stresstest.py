@@ -1,14 +1,14 @@
-import jkFontGeometry
-
 from random import random
 from time import time
 
-# from jkFontGeometry.geometry import intersect
-# from jkFontGeometry.beziertools import getPointOnCubic
+import fontgeometry
+
+# from fontgeometry.geometry import intersect
+# from fontgeometry.beziertools import getPointOnCubic
 
 
-intersect = jkFontGeometry.geometry.intersect
-getPointOnCubic = jkFontGeometry.geometry.getPointOnCubic
+intersect = fontgeometry.geometry.intersect
+getPointOnCubic = fontgeometry.geometry.getPointOnCubic
 
 
 def random_point():

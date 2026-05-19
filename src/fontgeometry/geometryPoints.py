@@ -1,18 +1,21 @@
-from jkFontGeometry import geometry
+from typing import TYPE_CHECKING
 
+from fontgeometry import geometry
+
+if TYPE_CHECKING:
+    from fontgeometry.typing import Point
 
 # Helper functions for geometry, point-based API with pt.x and pt.y
 # These are just wrapper functions for the tuple-based functions in
 # jkRFTools.geometry.
 
-def angle_between_points(p0, p1, do_round=False):
+
+def angle_between_points(p0, p1, do_round: bool = False) -> float | int:
     return geometry.angle_between_points((p0.x, p0.y), (p1.x, p1.y), do_round)
 
 
-def distance_between_points(p0, p1, do_round=False):
-    return geometry.distance_between_points(
-        (p0.x, p0.y), (p1.x, p1.y), do_round
-    )
+def distance_between_points(p0, p1, do_round: bool = False) -> float | int:
+    return geometry.distance_between_points((p0.x, p0.y), (p1.x, p1.y), do_round)
 
 
 def half_point(p0, p1, do_round=False):
@@ -22,11 +25,13 @@ def half_point(p0, p1, do_round=False):
     return hp
 
 
-def round_point(pt):
+def round_point(pt) -> "Point":
+    # FIXME: Use proper rounding
     return (int(round(pt.x)), int(round(pt.y)))
 
 
-def round_point_conditional(pt, do_round=True):
+def round_point_conditional(pt, do_round: bool = True):
+    # FIXME: Returns a different type based on do_round
     if do_round:
         return (int(round(pt.x)), int(round(pt.y)))
     else:
@@ -49,36 +54,57 @@ def round_point_conditional(pt, do_round=True):
 # gamma = the angle between p3I and p0I
 
 
-def triangle_angles(p0, p1, p2, p3):
+def triangle_angles(p0, p1, p2, p3) -> tuple[float, float, float]:
     # Calculate the angles
     return geometry.triangle_angles(
-        (p0.x, p0.y), (p1.x, p1.y), (p2.x, p2.y), (p3.x, p3.y),
+        (p0.x, p0.y),
+        (p1.x, p1.y),
+        (p2.x, p2.y),
+        (p3.x, p3.y),
     )
 
 
-def triangle_area(a, b, c, do_round=False):
+def triangle_area(a, b, c, do_round=False) -> float:
     return geometry.triangle_area(
-        (a.x, a.y), (b.x, b.y), (c.x, c.y), do_round,
+        (a.x, a.y),
+        (b.x, b.y),
+        (c.x, c.y),
+        do_round,
     )
 
 
-def triangle_sides(p0, p1, p2, p3):
+def triangle_sides(p0, p1, p2, p3) -> tuple[float, float, float]:
     # Calculate the sides of the triangle
     return geometry.triangle_sides(
-        (p0.x, p0.y), (p1.x, p1.y), (p2.x, p2.y), (p3.x, p3.y),
+        (p0.x, p0.y),
+        (p1.x, p1.y),
+        (p2.x, p2.y),
+        (p3.x, p3.y),
     )
 
 
-def is_on_left(a, b, c):
+def is_on_left(a, b, c) -> bool:
     # Is point c on the left of ab?
-    return geometry.is_on_left((a.x, a.y), (b.x, b.y), (c.x, c.y),)
+    return geometry.is_on_left(
+        (a.x, a.y),
+        (b.x, b.y),
+        (c.x, c.y),
+    )
 
 
-def is_on_right(a, b, c):
+def is_on_right(a, b, c) -> bool:
     # Is point c on the right of ab?
-    return geometry.is_on_right((a.x, a.y), (b.x, b.y), (c.x, c.y),)
+    return geometry.is_on_right(
+        (a.x, a.y),
+        (b.x, b.y),
+        (c.x, c.y),
+    )
 
 
-def is_collinear(a, b, c):
+def is_collinear(a, b, c) -> bool:
     # Is point c on ab?
-    return geometry.is_collinear((a.x, a.y), (b.x, b.y), (c.x, c.y),)
+    return geometry.is_collinear(
+        (a.x, a.y),
+        (b.x, b.y),
+        (c.x, c.y),
+    )

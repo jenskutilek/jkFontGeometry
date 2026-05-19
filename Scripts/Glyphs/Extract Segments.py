@@ -1,6 +1,5 @@
 # MenuTitle: Extract Segments
-from jkFontGeometry.extract import CubicSegments
-
+from fontgeometry.extract import CubicSegments
 
 DEBUG_EXTRACT = True
 
