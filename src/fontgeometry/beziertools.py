@@ -16,21 +16,21 @@ if TYPE_CHECKING:
 
 
 def estimateCubicCurveLength(
-    pt0: "PointTuple",
     pt1: "PointTuple",
     pt2: "PointTuple",
     pt3: "PointTuple",
+    pt4: "PointTuple",
     precision: int = 10,
 ) -> float:
     """
-    Estimate the length of this curve by iterating
-    through it and averaging the length of the flat bits.
+    Estimate the length of this curve by iterating through it and averaging the length
+    of the flat bits.
     """
 
-    length = 0
+    length = 0.0
     step = 1.0 / precision
     points = getPointListForCubic(
-        [f * step for f in range(precision + 1)], pt0, pt1, pt2, pt3
+        [f * step for f in range(precision + 1)], pt1, pt2, pt3, pt4
     )
     for i in range(len(points) - 1):
         pta = points[i]
@@ -40,54 +40,54 @@ def estimateCubicCurveLength(
 
 
 def getPointOnCubic(
-    t: float, pt0: "PointTuple", pt1: "PointTuple", pt2: "PointTuple", pt3: "PointTuple"
+    t: float, pt1: "PointTuple", pt2: "PointTuple", pt3: "PointTuple", pt4: "PointTuple"
 ) -> "PointTuple":
     """
-    Return the point for t on the cubic curve defined by pt0, pt1, pt2, pt3.
+    Return the point for t on the cubic curve defined by pt1, pt2, pt3, pt4.
     """
     if t == 0:
-        return pt0
+        return pt1
     if t == 1:
-        return pt3
+        return pt4
     if t == 0.5:
-        a = half_point(pt0, pt1)
-        b = half_point(pt1, pt2)
-        c = half_point(pt2, pt3)
+        a = half_point(pt1, pt2)
+        b = half_point(pt2, pt3)
+        c = half_point(pt3, pt4)
         d = half_point(a, b)
         e = half_point(b, c)
         return half_point(d, e)
     else:
-        cx = (pt1[0] - pt0[0]) * 3
-        cy = (pt1[1] - pt0[1]) * 3
-        bx = (pt2[0] - pt1[0]) * 3 - cx
-        by = (pt2[1] - pt1[1]) * 3 - cy
-        ax = pt3[0] - pt0[0] - cx - bx
-        ay = pt3[1] - pt0[1] - cy - by
+        cx = (pt2[0] - pt1[0]) * 3
+        cy = (pt2[1] - pt1[1]) * 3
+        bx = (pt3[0] - pt2[0]) * 3 - cx
+        by = (pt3[1] - pt2[1]) * 3 - cy
+        ax = pt4[0] - pt1[0] - cx - bx
+        ay = pt4[1] - pt1[1] - cy - by
         t3 = t**3
         t2 = t * t
-        x = ax * t3 + bx * t2 + cx * t + pt0[0]
-        y = ay * t3 + by * t2 + cy * t + pt0[1]
+        x = ax * t3 + bx * t2 + cx * t + pt1[0]
+        y = ay * t3 + by * t2 + cy * t + pt1[1]
         return x, y
 
 
 def getPointListForCubic(
     ts: list[float],
-    pt0: "PointTuple",
     pt1: "PointTuple",
     pt2: "PointTuple",
     pt3: "PointTuple",
+    pt4: "PointTuple",
 ) -> "list[PointTuple]":
     """
-    Return a list of points for increments of t on the cubic curve defined by
-    pt0, pt1, pt2, pt3.
+    Return a list of points for increments of t on the cubic curve defined by pt1, pt2,
+    pt3, pt4.
     """
-    (x0, y0), (x1, y1) = pt0, pt1
+    (x0, y0), (x1, y1) = pt1, pt2
     cx = (x1 - x0) * 3
     cy = (y1 - y0) * 3
-    bx = (pt2[0] - x1) * 3 - cx
-    by = (pt2[1] - y1) * 3 - cy
-    ax = pt3[0] - x0 - cx - bx
-    ay = pt3[1] - y0 - cy - by
+    bx = (pt3[0] - x1) * 3 - cx
+    by = (pt3[1] - y1) * 3 - cy
+    ax = pt4[0] - x0 - cx - bx
+    ay = pt4[1] - y0 - cy - by
     path: "list[PointTuple]" = []
     for t in ts:
         t3 = t**3
@@ -99,17 +99,17 @@ def getPointListForCubic(
 
 
 def getExtremaForCubic(
-    pt0: "PointTuple",
     pt1: "PointTuple",
     pt2: "PointTuple",
     pt3: "PointTuple",
+    pt4: "PointTuple",
     h: bool = True,
     v: bool = False,
     include_start_end: bool = False,
 ) -> list[float]:
     """
-    Return a list of t values at which the cubic curve defined by pt0, pt1,
-    pt2, pt3 has extrema.
+    Return a list of t values at which the cubic curve defined by pt1, pt2, pt3, pt4 has
+    extrema.
 
     :param h: Calculate extrema for horizontal derivative == 0 (= what type
        designers call vertical extrema!).
@@ -121,7 +121,7 @@ def getExtremaForCubic(
        end point of the curve.
     :type include_start_end: bool
     """
-    (ax, ay), (bx, by), c, _d = calcCubicParameters(pt0, pt1, pt2, pt3)
+    (ax, ay), (bx, by), c, _d = calcCubicParameters(pt1, pt2, pt3, pt4)
     ax *= 3.0
     ay *= 3.0
     bx *= 2.0
@@ -141,17 +141,17 @@ def getExtremaForCubic(
 
 
 def getExtremumPointsForCubic(
-    pt0: "PointTuple",
     pt1: "PointTuple",
     pt2: "PointTuple",
     pt3: "PointTuple",
+    pt4: "PointTuple",
     h: bool = True,
     v: bool = False,
     include_start_end: bool = False,
 ) -> "list[PointTuple]":
     """
-    Return a list of points as (x, y) tuples at which the cubic curve defined
-    by pt0, pt1, pt2, pt3 has extrema.
+    Return a list of points as (x, y) tuples at which the cubic curve defined by pt1,
+    pt2, pt3, pt4 has extrema.
 
     :param h: Calculate extrema for horizontal derivative == 0 (= what type
               designers call vertical extrema!).
@@ -165,25 +165,25 @@ def getExtremumPointsForCubic(
     """
     return getPointListForCubic(
         getExtremaForCubic(
-            pt0, pt1, pt2, pt3, h=h, v=v, include_start_end=include_start_end
+            pt1, pt2, pt3, pt4, h=h, v=v, include_start_end=include_start_end
         ),
-        pt0,
         pt1,
         pt2,
         pt3,
+        pt4,
     )
 
 
 def getInflectionsForCubic(
-    pt0: "PointTuple", pt1: "PointTuple", pt2: "PointTuple", pt3: "PointTuple"
+    pt1: "PointTuple", pt2: "PointTuple", pt3: "PointTuple", pt4: "PointTuple"
 ) -> list[float]:
     # After https://github.com/mekkablue/InsertInflections
     roots: list[float] = []
 
-    x1, y1 = pt0
-    x2, y2 = pt1
-    x3, y3 = pt2
-    x4, y4 = pt3
+    x1, y1 = pt1
+    x2, y2 = pt2
+    x3, y3 = pt3
+    x4, y4 = pt4
 
     ax = x2 - x1
     ay = y2 - y1
@@ -221,13 +221,13 @@ def getInflectionsForCubic(
 
 
 def getPointListForQuadratic(
-    ts: list[float], pt0: "PointTuple", pt1: "PointTuple", pt2: "PointTuple"
+    ts: list[float], pt1: "PointTuple", pt2: "PointTuple", pt3: "PointTuple"
 ) -> "list[PointTuple]":
     """
-    Return a list of points for increments of t on the quadratic curve defined
-    by pt0, pt1, pt2.
+    Return a list of points for increments of t on the quadratic curve defined by pt1,
+    pt2, pt3.
     """
-    (x0, y0), (x1, y1), (x2, y2) = pt0, pt1, pt2
+    (x0, y0), (x1, y1), (x2, y2) = pt1, pt2, pt3
     path: "list[PointTuple]" = []
     for t in ts:
         t0 = (1 - t) * (1 - t)
@@ -240,16 +240,16 @@ def getPointListForQuadratic(
 
 
 def getExtremaForQuadratic(
-    pt0: "PointTuple",
     pt1: "PointTuple",
     pt2: "PointTuple",
+    pt3: "PointTuple",
     h: bool = True,
     v: bool = False,
     include_start_end: bool = False,
 ) -> list[float]:
     """
-    Return a list of t values at which the quadratic curve defined by pt0, pt1,
-    pt2 has extrema.
+    Return a list of t values at which the quadratic curve defined by pt1, pt2, pt3 has
+    extrema.
 
     :param h: Calculate extrema for horizontal derivative == 0 (= what type
               designers call vertical extrema!).
@@ -261,7 +261,7 @@ def getExtremaForQuadratic(
                               end point of the curve.
     :type include_start_end:  bool
     """
-    (ax, ay), (bx, by), _c = calcQuadraticParameters(pt0, pt1, pt2)
+    (ax, ay), (bx, by), _c = calcQuadraticParameters(pt1, pt2, pt3)
     ax *= 2.0
     ay *= 2.0
     roots = []
@@ -279,16 +279,16 @@ def getExtremaForQuadratic(
 
 
 def getExtremumPointsForQuadratic(
-    pt0: "PointTuple",
     pt1: "PointTuple",
     pt2: "PointTuple",
+    pt3: "PointTuple",
     h: bool = True,
     v: bool = False,
     include_start_end: bool = False,
 ) -> "list[PointTuple]":
     """
-    Return a list of points as (x, y) tuples at which the quadratic curve
-    defined by pt0, pt1, pt2 has extrema.
+    Return a list of points as (x, y) tuples at which the quadratic curve defined by
+    pt1, pt2, pt3 has extrema.
 
     :param h: Calculate extrema for horizontal derivative == 0 (= what type
               designers call vertical extrema!).
@@ -302,11 +302,11 @@ def getExtremumPointsForQuadratic(
     """
     return getPointListForQuadratic(
         getExtremaForQuadratic(
-            pt0, pt1, pt2, h=h, v=v, include_start_end=include_start_end
+            pt1, pt2, pt3, h=h, v=v, include_start_end=include_start_end
         ),
-        pt0,
         pt1,
         pt2,
+        pt3,
     )
 
 
