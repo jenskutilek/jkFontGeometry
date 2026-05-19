@@ -22,6 +22,10 @@ class CubicTests(unittest.TestCase):
         c = Cubic((0, 0), (1, 1), (3, 1), (4, 0))
         assert c.extremum_points == [(2.0, 0.75)]
 
+    def test_extremum_points_2(self):
+        c = Cubic((4, 0), (5, 1), (7, 0), (8, 0))
+        assert c.extremum_points == [(8, 0), (5.2592592592592595, 0.4444444444444444)]
+
     def test_inflections(self):
         c = Cubic((0, 0), (1, 1), (3, 0), (4, 0))
         assert c.inflections == [0.6972243622680054]
@@ -71,3 +75,30 @@ class SuperCubicTests(unittest.TestCase):
     def test_instantiation(self):
         sc = SuperCubic()
         assert isinstance(sc, SuperCubic)
+
+    def test_add_cubic_flat(self):
+        sc = SuperCubic()
+        sc.add_cubic_from_point_tuple([(0, 0), (3, 0)])
+        c = sc.cubics[0]
+        assert c.pt1 == (0, 0)
+        assert c.pt2 == (1, 0)
+        assert c.pt3 == (2, 0)
+        assert c.pt4 == (3, 0)
+
+    def test_extremum_points(self):
+        sc = SuperCubic()
+        sc.add_cubic_from_points((0, 0), (1, 1), (3, 1), (4, 0))
+        sc.add_cubic_from_points((4, 0), (5, 1), (7, 0), (8, 0))
+        assert sc.extremum_points == [
+            (2.0, 0.75),
+            (8, 0),
+            (5.2592592592592595, 0.4444444444444444),
+        ]
+
+    def test_inflection_points(self):
+        sc = SuperCubic()
+        sc.add_cubic_from_points((0, 0), (1, 1), (3, 1), (4, 0))
+        sc.add_cubic_from_points((4, 0), (5, 1), (7, 0), (8, 0))
+        assert sc.inflection_points == [
+            (6.872166581031861, 0.19175012845220896),
+        ]
