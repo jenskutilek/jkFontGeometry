@@ -11,16 +11,16 @@ from fontTools.misc.bezierTools import (
 from fontgeometry.geometry import distance_between_points, half_point
 
 if TYPE_CHECKING:
-    from fontgeometry.typing import TuplePoint
+    from fontgeometry.typing import PointTuple
 
 # Adapted from robofab.pens.filterPen
 
 
 def estimateCubicCurveLength(
-    pt0: "TuplePoint",
-    pt1: "TuplePoint",
-    pt2: "TuplePoint",
-    pt3: "TuplePoint",
+    pt0: "PointTuple",
+    pt1: "PointTuple",
+    pt2: "PointTuple",
+    pt3: "PointTuple",
     precision: int = 10,
 ) -> float:
     """
@@ -41,8 +41,8 @@ def estimateCubicCurveLength(
 
 
 def getPointOnCubic(
-    t: float, pt0: "TuplePoint", pt1: "TuplePoint", pt2: "TuplePoint", pt3: "TuplePoint"
-) -> "TuplePoint":
+    t: float, pt0: "PointTuple", pt1: "PointTuple", pt2: "PointTuple", pt3: "PointTuple"
+) -> "PointTuple":
     """
     Return the point for t on the cubic curve defined by pt0, pt1, pt2, pt3.
     """
@@ -73,11 +73,11 @@ def getPointOnCubic(
 
 def getPointListForCubic(
     ts: list[float],
-    pt0: "TuplePoint",
-    pt1: "TuplePoint",
-    pt2: "TuplePoint",
-    pt3: "TuplePoint",
-) -> "list[TuplePoint]":
+    pt0: "PointTuple",
+    pt1: "PointTuple",
+    pt2: "PointTuple",
+    pt3: "PointTuple",
+) -> "list[PointTuple]":
     """
     Return a list of points for increments of t on the cubic curve defined by
     pt0, pt1, pt2, pt3.
@@ -89,7 +89,7 @@ def getPointListForCubic(
     by = (pt2[1] - y1) * 3 - cy
     ax = pt3[0] - x0 - cx - bx
     ay = pt3[1] - y0 - cy - by
-    path: "list[TuplePoint]" = []
+    path: "list[PointTuple]" = []
     for t in ts:
         t3 = t**3
         t2 = t * t
@@ -100,10 +100,10 @@ def getPointListForCubic(
 
 
 def getExtremaForCubic(
-    pt0: "TuplePoint",
-    pt1: "TuplePoint",
-    pt2: "TuplePoint",
-    pt3: "TuplePoint",
+    pt0: "PointTuple",
+    pt1: "PointTuple",
+    pt2: "PointTuple",
+    pt3: "PointTuple",
     h: bool = True,
     v: bool = False,
     include_start_end: bool = False,
@@ -142,14 +142,14 @@ def getExtremaForCubic(
 
 
 def getExtremumPointsForCubic(
-    pt0: "TuplePoint",
-    pt1: "TuplePoint",
-    pt2: "TuplePoint",
-    pt3: "TuplePoint",
+    pt0: "PointTuple",
+    pt1: "PointTuple",
+    pt2: "PointTuple",
+    pt3: "PointTuple",
     h: bool = True,
     v: bool = False,
     include_start_end: bool = False,
-) -> "list[TuplePoint]":
+) -> "list[PointTuple]":
     """
     Return a list of points as (x, y) tuples at which the cubic curve defined
     by pt0, pt1, pt2, pt3 has extrema.
@@ -176,7 +176,7 @@ def getExtremumPointsForCubic(
 
 
 def getInflectionsForCubic(
-    pt0: "TuplePoint", pt1: "TuplePoint", pt2: "TuplePoint", pt3: "TuplePoint"
+    pt0: "PointTuple", pt1: "PointTuple", pt2: "PointTuple", pt3: "PointTuple"
 ) -> list[float]:
     # After https://github.com/mekkablue/InsertInflections
     roots: list[float] = []
@@ -222,14 +222,14 @@ def getInflectionsForCubic(
 
 
 def getPointListForQuadratic(
-    ts: list[float], pt0: "TuplePoint", pt1: "TuplePoint", pt2: "TuplePoint"
-) -> "list[TuplePoint]":
+    ts: list[float], pt0: "PointTuple", pt1: "PointTuple", pt2: "PointTuple"
+) -> "list[PointTuple]":
     """
     Return a list of points for increments of t on the quadratic curve defined
     by pt0, pt1, pt2.
     """
     (x0, y0), (x1, y1), (x2, y2) = pt0, pt1, pt2
-    path: "list[TuplePoint]" = []
+    path: "list[PointTuple]" = []
     for t in ts:
         t0 = (1 - t) * (1 - t)
         t1 = 2 * (1 - t) * t
@@ -241,9 +241,9 @@ def getPointListForQuadratic(
 
 
 def getExtremaForQuadratic(
-    pt0: "TuplePoint",
-    pt1: "TuplePoint",
-    pt2: "TuplePoint",
+    pt0: "PointTuple",
+    pt1: "PointTuple",
+    pt2: "PointTuple",
     h: bool = True,
     v: bool = False,
     include_start_end: bool = False,
@@ -280,13 +280,13 @@ def getExtremaForQuadratic(
 
 
 def getExtremumPointsForQuadratic(
-    pt0: "TuplePoint",
-    pt1: "TuplePoint",
-    pt2: "TuplePoint",
+    pt0: "PointTuple",
+    pt1: "PointTuple",
+    pt2: "PointTuple",
     h: bool = True,
     v: bool = False,
     include_start_end: bool = False,
-) -> "list[TuplePoint]":
+) -> "list[PointTuple]":
     """
     Return a list of points as (x, y) tuples at which the quadratic curve
     defined by pt0, pt1, pt2 has extrema.

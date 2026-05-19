@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from fontgeometry import geometry
 
 if TYPE_CHECKING:
-    from fontgeometry.typing import TuplePoint
+    from fontgeometry.typing import PointTuple
 
 # Helper functions for geometry, point-based API with pt.x and pt.y
 # These are just wrapper functions for the tuple-based functions in
@@ -25,7 +25,7 @@ def half_point(p0, p1, do_round=False):
     return hp
 
 
-def round_point(pt) -> "TuplePoint":
+def round_point(pt) -> "PointTuple":
     # FIXME: Use proper rounding
     return (int(round(pt.x)), int(round(pt.y)))
 

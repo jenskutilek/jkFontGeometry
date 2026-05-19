@@ -2,7 +2,7 @@ from math import atan2, hypot, pi, sin
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from fontgeometry.typing import TuplePoint
+    from fontgeometry.typing import PointTuple
 
 """
 Slow geometry -- when the rust extension is not available.
@@ -13,7 +13,7 @@ Slow geometry -- when the rust extension is not available.
 
 
 def angle_between_points(
-    p0: "TuplePoint", p1: "TuplePoint", do_round: bool = False
+    p0: "PointTuple", p1: "PointTuple", do_round: bool = False
 ) -> float | int:
     phi = atan2(p1[1] - p0[1], p1[0] - p0[0])
     if do_round:
@@ -23,7 +23,7 @@ def angle_between_points(
 
 
 def distance_between_points(
-    p0: "TuplePoint", p1: "TuplePoint", do_round: bool = False
+    p0: "PointTuple", p1: "PointTuple", do_round: bool = False
 ) -> float | int:
     d = hypot(p1[1] - p0[1], p1[0] - p0[0])
     if do_round:
@@ -33,8 +33,8 @@ def distance_between_points(
 
 
 def half_point(
-    p0: "TuplePoint", p1: "TuplePoint", do_round: bool = False
-) -> "TuplePoint":
+    p0: "PointTuple", p1: "PointTuple", do_round: bool = False
+) -> "PointTuple":
     # Get the coordinate tuple that lies halfway between two other points.
     hp = ((p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2)
     if do_round:
@@ -42,12 +42,12 @@ def half_point(
     return hp
 
 
-def round_point(pt: "TuplePoint") -> "TuplePoint":
+def round_point(pt: "PointTuple") -> "PointTuple":
     # FIXME: Use proper rounding
     return (int(round(pt[0])), int(round(pt[1])))
 
 
-def round_point_conditional(pt: "TuplePoint", do_round: bool = True) -> "TuplePoint":
+def round_point_conditional(pt: "PointTuple", do_round: bool = True) -> "PointTuple":
     if do_round:
         return (int(round(pt[0])), int(round(pt[1])))
     else:
@@ -70,7 +70,7 @@ def round_point_conditional(pt: "TuplePoint", do_round: bool = True) -> "TuplePo
 
 
 def triangle_angles(
-    p0: "TuplePoint", p1: "TuplePoint", p2: "TuplePoint", p3: "TuplePoint"
+    p0: "PointTuple", p1: "PointTuple", p2: "PointTuple", p3: "PointTuple"
 ) -> tuple[float, float, float]:
 
     # Calculate the angles
@@ -89,7 +89,7 @@ def triangle_angles(
 
 
 def triangle_area(
-    a: "TuplePoint", b: "TuplePoint", c: "TuplePoint", do_round: bool = False
+    a: "PointTuple", b: "PointTuple", c: "PointTuple", do_round: bool = False
 ) -> float:
     area = (b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1])
     if do_round:
@@ -99,7 +99,7 @@ def triangle_area(
 
 
 def triangle_sides(
-    p0: "TuplePoint", p1: "TuplePoint", p2: "TuplePoint", p3: "TuplePoint"
+    p0: "PointTuple", p1: "PointTuple", p2: "PointTuple", p3: "PointTuple"
 ) -> tuple[float, float, float]:
     alpha, beta, gamma = triangle_angles(p0, p1, p2, p3)
 
@@ -121,17 +121,17 @@ def triangle_sides(
     return a, b, c
 
 
-def is_on_left(a: "TuplePoint", b: "TuplePoint", c: "TuplePoint") -> bool:
+def is_on_left(a: "PointTuple", b: "PointTuple", c: "PointTuple") -> bool:
     # Is point c on the left of ab?
     return triangle_area(a, b, c) > 0
 
 
-def is_on_right(a: "TuplePoint", b: "TuplePoint", c: "TuplePoint") -> bool:
+def is_on_right(a: "PointTuple", b: "PointTuple", c: "PointTuple") -> bool:
     # Is point c on the right of ab?
     return triangle_area(a, b, c) < 0
 
 
-def is_collinear(a: "TuplePoint", b: "TuplePoint", c: "TuplePoint") -> bool:
+def is_collinear(a: "PointTuple", b: "PointTuple", c: "PointTuple") -> bool:
     # Is point c on ab?
     return triangle_area(a, b, c) == 0
 
@@ -139,7 +139,7 @@ def is_collinear(a: "TuplePoint", b: "TuplePoint", c: "TuplePoint") -> bool:
 # Intersections
 
 
-def dot_product_2d(p1: "TuplePoint", p2: "TuplePoint", p3: "TuplePoint") -> float:
+def dot_product_2d(p1: "PointTuple", p2: "PointTuple", p3: "PointTuple") -> float:
     # Return the dot product of the vectors p1_p2 and p1_p3
     p1x, p1y = p1
     p2x, p2y = p2
@@ -158,11 +158,11 @@ def dot_product_2d(p1: "TuplePoint", p2: "TuplePoint", p3: "TuplePoint") -> floa
 
 
 def same_direction(
-    p0: "TuplePoint",
-    p1: "TuplePoint",
-    p2: "TuplePoint",
-    p3: "TuplePoint",
-    i: "TuplePoint",
+    p0: "PointTuple",
+    p1: "PointTuple",
+    p2: "PointTuple",
+    p3: "PointTuple",
+    i: "PointTuple",
 ) -> bool:
     # Check if the lines from p0_p1 and p0_i,
     # as well as p3_p2 and p3_i point in the same direction +- 90 degrees.
@@ -173,7 +173,7 @@ def same_direction(
     return True
 
 
-def line_coefficients(p1: "TuplePoint", p2: "TuplePoint") -> tuple[float, float, float]:
+def line_coefficients(p1: "PointTuple", p2: "PointTuple") -> tuple[float, float, float]:
     # https://stackoverflow.com/questions/20677795/how-do-i-compute-the-interse
     # ction-point-of-two-lines-in-python
     p1x, p1y = p1
@@ -186,7 +186,7 @@ def line_coefficients(p1: "TuplePoint", p2: "TuplePoint") -> tuple[float, float,
 
 def intersect_coeffs(
     L1: tuple[float, float, float], L2: tuple[float, float, float]
-) -> "TuplePoint | None":
+) -> "PointTuple | None":
     D = L1[0] * L2[1] - L1[1] * L2[0]
     Dx = L1[2] * L2[1] - L1[1] * L2[2]
     Dy = L1[0] * L2[2] - L1[2] * L2[0]
@@ -199,8 +199,8 @@ def intersect_coeffs(
 
 
 def intersect(
-    p0: "TuplePoint", p1: "TuplePoint", p2: "TuplePoint", p3: "TuplePoint"
-) -> "TuplePoint | None":
+    p0: "PointTuple", p1: "PointTuple", p2: "PointTuple", p3: "PointTuple"
+) -> "PointTuple | None":
     # Find the intersection of two lines given by two points on each line.
     L1 = line_coefficients(p0, p1)
     L2 = line_coefficients(p3, p2)
