@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 # Helper functions for geometry, point-based API with pt.x and pt.y
 # These are just wrapper functions for the tuple-based functions in
-# jkRFTools.geometry.
+# fontgeometry.geometry.
 
 
 def angle_between_points(p0, p1, do_round: bool = False) -> float | int:

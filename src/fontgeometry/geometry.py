@@ -4,10 +4,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from fontgeometry.typing import PointTuple
 
-"""
-Slow geometry -- when the rust extension is not available.
-"""
-
 
 # Helper functions for geometry, tuple-based API with pt = (x, y)
 
