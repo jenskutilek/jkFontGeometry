@@ -1,14 +1,8 @@
 from random import random
 from time import time
 
-import fontgeometry
-
-# from fontgeometry.geometry import intersect
-# from fontgeometry.beziertools import getPointOnCubic
-
-
-intersect = fontgeometry.geometry.intersect
-getPointOnCubic = fontgeometry.geometry.getPointOnCubic
+from fontgeometry.beziertools import getPointOnCubic
+from fontgeometry.geometry import intersect
 
 
 def random_point():
