@@ -317,9 +317,17 @@ class SuperCubic:
         return self._t_points.get(pt, self.calculate_t_for_point(pt))
 
     def calculate_t_for_point(self, pt: "PointTuple") -> tuple[int, float] | None:
-        # Calculate the t value for the closest distance of point pt to a series of
-        # cubic Beziers
+        """
+        Calculate the t value for the closest distance of point pt to a series of cubic
+        Beziers
 
+
+        Args:
+            pt (PointTuple): The point for which to find t
+
+        Returns:
+            tuple[int, float] | None: The t value, 0.0 to 1.0
+        """
         x, y = pt
 
         # Check special case: Is the point close to the first or last points of any of
