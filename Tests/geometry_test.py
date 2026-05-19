@@ -2,8 +2,6 @@ import unittest
 from random import random
 from time import time
 
-import pytest
-
 from fontgeometry.beziertools import getPointOnCubic as get_cubic_point
 from fontgeometry.geometry import half_point, intersect
 

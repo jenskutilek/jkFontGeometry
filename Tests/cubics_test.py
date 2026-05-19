@@ -1,7 +1,5 @@
 import unittest
 
-import pytest
-
 from fontgeometry.cubics import Cubic, SuperCubic
 
 
