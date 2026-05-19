@@ -1,12 +1,15 @@
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fontgeometry.cubics import SuperCubic
+
+if TYPE_CHECKING:
+    from fontgeometry.typing import PointTuple
 
 
 class CubicSegments:
     def __init__(self, layer: Any) -> None:
         self.layer = layer
-        self.segments = []
+        self.segments: "list[list[PointTuple]]" = []
 
     def extract_segments(self) -> None:
         # Extract the segments from the layer without using a pen.
