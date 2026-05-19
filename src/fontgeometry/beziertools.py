@@ -111,15 +111,20 @@ def getExtremaForCubic(
     Return a list of t values at which the cubic curve defined by pt1, pt2, pt3, pt4 has
     extrema.
 
-    :param h: Calculate extrema for horizontal derivative == 0 (= what type
-       designers call vertical extrema!).
-    :type h: bool
-    :param v: Calculate extrema for vertical derivative == 0 (= what type
-       designers call horizontal extrema!).
-    :type v: bool
-    :param include_start_end: Also calculate extrema that lie at the start or
-       end point of the curve.
-    :type include_start_end: bool
+    Args:
+        pt1 (PointTuple): The first point of the cubic
+        pt2 (PointTuple): The second point of the cubic, a control point
+        pt3 (PointTuple): The third point of the cubic, a control point
+        pt4 (PointTuple): The fourth point of the cubic
+        h (bool, optional): Calculate extrema for horizontal derivative == 0 (= what
+            type designers call vertical extrema!). Defaults to True.
+        v (bool, optional): Calculate extrema for vertical derivative == 0 (= what type
+            designers call horizontal extrema!). Defaults to False.
+        include_start_end (bool, optional): Whether to include extrema that lie at the
+            start or end point of the curve. Defaults to False.
+
+    Returns:
+        list[PointTuple]: The list of t values.
     """
     (ax, ay), (bx, by), c, _d = calcCubicParameters(pt1, pt2, pt3, pt4)
     ax *= 3.0
@@ -153,15 +158,20 @@ def getExtremumPointsForCubic(
     Return a list of points as (x, y) tuples at which the cubic curve defined by pt1,
     pt2, pt3, pt4 has extrema.
 
-    :param h: Calculate extrema for horizontal derivative == 0 (= what type
-              designers call vertical extrema!).
-    :type h:  bool
-    :param v: Calculate extrema for vertical derivative == 0 (= what type
-              designers call horizontal extrema!).
-    :type v:  bool
-    :param    include_start_end: Also calculate extrema that lie at the start
-              or end point of the curve.
-    :type     include_start_end: bool
+    Args:
+        pt1 (PointTuple): The first point of the cubic
+        pt2 (PointTuple): The second point of the cubic, a control point
+        pt3 (PointTuple): The third point of the cubic, a control point
+        pt4 (PointTuple): The fourth point of the cubic
+        h (bool, optional): Calculate extrema for horizontal derivative == 0 (= what
+            type designers call vertical extrema!). Defaults to True.
+        v (bool, optional): Calculate extrema for vertical derivative == 0 (= what type
+            designers call horizontal extrema!). Defaults to False.
+        include_start_end (bool, optional): Whether to include extrema that lie at the
+            start or end point of the curve. Defaults to False.
+
+    Returns:
+        list[PointTuple]: The list of point tuples.
     """
     return getPointListForCubic(
         getExtremaForCubic(
@@ -177,6 +187,19 @@ def getExtremumPointsForCubic(
 def getInflectionsForCubic(
     pt1: "PointTuple", pt2: "PointTuple", pt3: "PointTuple", pt4: "PointTuple"
 ) -> list[float]:
+    """
+    Return a list of t values at which the cubic curve defined by pt1, pt2, pt3, pt4 has
+    inflections.
+
+    Args:
+        pt1 (PointTuple): The first point of the cubic
+        pt2 (PointTuple): The second point of the cubic, a control point
+        pt3 (PointTuple): The third point of the cubic, a control point
+        pt4 (PointTuple): The fourth point of the cubic
+
+    Returns:
+        list[float]: _description_
+    """
     # After https://github.com/mekkablue/InsertInflections
     roots: list[float] = []
 
@@ -248,18 +271,22 @@ def getExtremaForQuadratic(
     include_start_end: bool = False,
 ) -> list[float]:
     """
-    Return a list of t values at which the quadratic curve defined by pt1, pt2, pt3 has
-    extrema.
+    Return a list of t values at which the quadratic curve defined by pt1, pt2, pt3, pt4
+    has extrema.
 
-    :param h: Calculate extrema for horizontal derivative == 0 (= what type
-              designers call vertical extrema!).
-    :type h:  bool
-    :param v: Calculate extrema for vertical derivative == 0 (= what type
-              designers call horizontal extrema!).
-    :type v:  bool
-    :param include_start_end: Also calculate extrema that lie at the start or
-                              end point of the curve.
-    :type include_start_end:  bool
+    Args:
+        pt1 (PointTuple): The first point of the curve
+        pt2 (PointTuple): The second point of the curve, an offcurve point
+        pt3 (PointTuple): The third point of the curve
+        h (bool, optional): Calculate extrema for horizontal derivative == 0 (= what
+            type designers call vertical extrema!). Defaults to True.
+        v (bool, optional): Calculate extrema for vertical derivative == 0 (= what type
+            designers call horizontal extrema!). Defaults to False.
+        include_start_end (bool, optional): Whether to include extrema that lie at the
+            start or end point of the curve. Defaults to False.
+
+    Returns:
+        list[PointTuple]: The list of t values.
     """
     (ax, ay), (bx, by), _c = calcQuadraticParameters(pt1, pt2, pt3)
     ax *= 2.0
@@ -288,17 +315,21 @@ def getExtremumPointsForQuadratic(
 ) -> "list[PointTuple]":
     """
     Return a list of points as (x, y) tuples at which the quadratic curve defined by
-    pt1, pt2, pt3 has extrema.
+    pt1, pt2, pt3, pt4 has extrema.
 
-    :param h: Calculate extrema for horizontal derivative == 0 (= what type
-              designers call vertical extrema!).
-    :type h:  bool
-    :param v: Calculate extrema for vertical derivative == 0 (= what type
-              designers call horizontal extrema!).
-    :type v:  bool
-    :param include_start_end: Also calculate extrema that lie at the start or
-                              end point of the curve.
-    :type include_start_end:  bool
+    Args:
+        pt1 (PointTuple): The first point of the curve
+        pt2 (PointTuple): The second point of the curve, an offcurve point
+        pt3 (PointTuple): The third point of the curve
+        h (bool, optional): Calculate extrema for horizontal derivative == 0 (= what
+            type designers call vertical extrema!). Defaults to True.
+        v (bool, optional): Calculate extrema for vertical derivative == 0 (= what type
+            designers call horizontal extrema!). Defaults to False.
+        include_start_end (bool, optional): Whether to include extrema that lie at the
+            start or end point of the curve. Defaults to False.
+
+    Returns:
+        list[PointTuple]: The list of point tuples.
     """
     return getPointListForQuadratic(
         getExtremaForQuadratic(
