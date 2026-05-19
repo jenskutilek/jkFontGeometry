@@ -14,6 +14,58 @@ class CubicTests(unittest.TestCase):
         assert c.pt3 == (3, 1)
         assert c.pt4 == (4, 0)
 
+    def test_extrema(self):
+        c = Cubic((0, 0), (1, 1), (3, 1), (4, 0))
+        assert c.extrema == [0.5]
+
+    def test_extremum_points(self):
+        c = Cubic((0, 0), (1, 1), (3, 1), (4, 0))
+        assert c.extremum_points == [(2.0, 0.75)]
+
+    def test_inflections(self):
+        c = Cubic((0, 0), (1, 1), (3, 0), (4, 0))
+        assert c.inflections == [0.6972243622680054]
+
+    def test_inflection_points(self):
+        c = Cubic((0, 0), (1, 1), (3, 0), (4, 0))
+        assert c.inflection_points == [(2.8721665810318613, 0.19175012845220896)]
+
+    def test_inflections_none(self):
+        c = Cubic((0, 0), (1, 1), (3, 1), (4, 0))
+        assert c.inflections == []
+
+    def test_inflection_points_none(self):
+        c = Cubic((0, 0), (1, 1), (3, 1), (4, 0))
+        assert c.inflection_points == []
+
+    def test_length(self):
+        c = Cubic((0, 0), (1, 1), (3, 1), (4, 0))
+        assert c.length == 4.376310298502258
+
+    def test_params(self):
+        c = Cubic((0, 0), (1, 1), (3, 1), (4, 0))
+        assert c.params == ((-2.0, 0.0), (3.0, -3.0), (3.0, 3.0), (0, 0))
+
+    def test_raster_steps(self):
+        c = Cubic((0, 0), (1, 1), (3, 1), (4, 0))
+        assert c.raster_steps == 18
+
+    def test_cubic_points_1(self):
+        c = Cubic((0, 0), (1, 1), (3, 1), (4, 0), raster_length=1)
+        assert c.cubic_points == [
+            (0, 0),
+            (0.90625, 0.5625),
+            (2.0, 0.75),
+            (3.09375, 0.5625),
+            (4, 0),
+        ]
+        assert c.num_cubic_points == 4
+
+    def test_cubic_points_2(self):
+        c = Cubic((0, 0), (1, 1), (3, 1), (4, 0), raster_length=2)
+        assert c.cubic_points == [(0, 0), (2.0, 0.75), (4, 0)]
+        assert c.num_cubic_points == 2
+
 
 class SuperCubicTests(unittest.TestCase):
     def test_instantiation(self):

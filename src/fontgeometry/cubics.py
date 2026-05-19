@@ -5,8 +5,8 @@ from fontgeometry.beziertools import (
     estimateCubicCurveLength,
     getExtremaForCubic,
     getInflectionsForCubic,
+    getPointOnCubic,
 )
-from fontgeometry.beziertools import getPointOnCubic as get_cubic_point
 from fontgeometry.ftbeziertools import calcCubicParameters, solveCubic
 
 if TYPE_CHECKING:
@@ -130,8 +130,7 @@ class Cubic:
         else:
             step = 1 / self.raster_steps
             t_list = [
-                get_cubic_point(t * step, self.pt1, self.pt2, self.pt3, self.pt4)
-                for t in range(0, self.raster_steps + 1)
+                self.get_cubic_point(t * step) for t in range(0, self.raster_steps + 1)
             ]
 
         # et = time()
@@ -150,20 +149,17 @@ class Cubic:
         )
 
     def calculate_extremum_points(self) -> "list[PointTuple]":
-        return [
-            get_cubic_point(t, self.pt1, self.pt2, self.pt3, self.pt4)
-            for t in self.extrema
-        ]
+        return [self.get_cubic_point(t) for t in self.extrema]
 
     def calculate_inflections(self) -> list[float]:
         # TODO: Inflections "between" segments
         return getInflectionsForCubic(self.pt1, self.pt2, self.pt3, self.pt4)
 
     def calculate_inflection_points(self) -> "list[PointTuple]":
-        return [
-            get_cubic_point(t, self.pt1, self.pt2, self.pt3, self.pt4)
-            for t in self.inflections
-        ]
+        return [self.get_cubic_point(t) for t in self.inflections]
+
+    def get_cubic_point(self, t: float) -> "PointTuple":
+        return getPointOnCubic(t, self.pt1, self.pt2, self.pt3, self.pt4)
 
     def reset_split(self) -> None:
         self._t = 0.0
@@ -311,7 +307,7 @@ class SuperCubic:
             if pt1x - 1 <= x <= pt1x + 1 and pt1y - 1 <= y <= pt1y + 1:
                 self._split_index = index
                 self._t_step = 0
-                # tx, ty = get_cubic_point(
+                # tx, ty = getPointOnCubic(
                 #     0, cubic.pt1, cubic.pt2, cubic.pt3, cubic.pt4
                 # )
                 # print(
@@ -322,7 +318,7 @@ class SuperCubic:
             elif pt4x - 1 <= x <= pt4x + 1 and pt4y - 1 <= y <= pt4y + 1:
                 self._split_index = index
                 self._t_step = cubic.num_cubic_points
-                # tx, ty = get_cubic_point(
+                # tx, ty = getPointOnCubic(
                 #     1, cubic.pt1, cubic.pt2, cubic.pt3, cubic.pt4
                 # )
                 # print(
@@ -354,7 +350,7 @@ class SuperCubic:
                         #     f"from step {self._t_step} to {step} of "
                         #     f"{cubic.num_cubic_points} ..."
                         # )
-                        # tx, ty = get_cubic_point(
+                        # tx, ty = getPointOnCubic(
                         #     step / cubic.num_cubic_points,
                         #     cubic.pt1,
                         #     cubic.pt2,
