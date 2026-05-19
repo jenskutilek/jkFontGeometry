@@ -102,3 +102,23 @@ class SuperCubicTests(unittest.TestCase):
         assert sc.inflection_points == [
             (6.872166581031861, 0.19175012845220896),
         ]
+
+    def test_f_for_point(self):
+        sc = SuperCubic()
+        sc.add_cubic_from_points((0, 0), (1, 1), (3, 1), (4, 0))
+        sc.add_cubic_from_points((4, 0), (5, 1), (7, 0), (8, 0))
+        assert sc.t_for_point((4.5, 1)) == (0, 1.0)
+
+    def test_split_at_pt(self):
+        sc = SuperCubic()
+        sc.add_cubic_from_points((0, 0), (1, 1), (3, 1), (4, 0))
+        sc.add_cubic_from_points((4, 0), (5, 1), (7, 0), (8, 0))
+        assert sc.split_at_pt((4.5, 1)) == (((0, 0), (1, 1), (3, 1), (4, 0)))
+        assert sc.split_at_pt((4, 0)) == (((4, 0), (4, 0), (4, 0), (4, 0)))
+
+    def test_split_at_pt_fast(self):
+        sc = SuperCubic()
+        sc.add_cubic_from_points((0, 0), (1, 1), (3, 1), (4, 0))
+        sc.add_cubic_from_points((4, 0), (5, 1), (7, 0), (8, 0))
+        assert sc.split_at_pt_fast((4.5, 1)) == (((0, 0), (1, 1), (3, 1), (4, 0)))
+        assert sc.split_at_pt_fast((4, 0)) == (((4, 0), (4, 0), (4, 0), (4, 0)))
