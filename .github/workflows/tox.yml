@@ -1,0 +1,41 @@
+name: Run tests
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  test:
+    name: Test with Python ${{ matrix.python }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      TOX_GH_MAJOR_MINOR: ${{ matrix.python }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12", "3.13", "3.14"]
+        os:
+          - ubuntu-latest
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v6
+
+      - name: Install uv and set the Python version
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install the project with test dependencies
+        run: uv sync --locked --group test
+
+      # - name: Set up test suite
+      #   run: uv run tox -vv --notest --skip-missing-interpreters false
+
+      - name: Install tox
+        run: uv tool install tox --with tox-uv --with tox-gh
+
+      - name: Run test suite
+        run: uv run tox --skip-pkg-install
+        env:
+          TOX_GH_MAJOR_MINOR: ${{ matrix.python }}
